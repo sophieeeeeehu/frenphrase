@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
-import { Login } from './login'
+import { Public } from './login'
 import type { User } from '@supabase/supabase-js'
 import AddWord from './addword'
 import './App.css'
@@ -33,7 +33,7 @@ function App() {
   if (loading) return <p>Loading...</p>
 
   if (!user) {
-    return <Login />
+    return <Public />
   }
 
   const isAdmin = user.id === ADMIN_ID

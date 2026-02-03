@@ -8,7 +8,7 @@ type Phrase = {
 }
 
 
-export function Public() {
+export function Exemples() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [phrases, setPhrases] = useState<Phrase[]>([])
@@ -25,7 +25,7 @@ export function Public() {
     useEffect(() => {
         const fetchPhrases = async () => {
             const { data, error } = await supabase
-                .from('phrases')
+                .from('exemples')
                 .select('*')
                 .order('created_at', { ascending: false })
 
@@ -74,4 +74,4 @@ export function Public() {
 }
 
 
-export default Public
+export default Exemples
