@@ -13,13 +13,13 @@
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
+  /* font-weight: 500;
+  color: #646cff; */
   text-decoration: inherit;
 }
-a:hover {
+/* a:hover {
   color: #535bf2;
-}
+} */
 
 body {
   margin: 0;
@@ -55,6 +55,53 @@ button:focus-visible {
 }
 
 
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #FFFBF1;
+}
+
+/* ------------- BANNER ------------------------------ */
+.BannerBack {
+  font-size: 0.6rem;
+  position: sticky;
+  z-index: 1000;
+  background-color: #AFAB23;
+  width: 100%;
+}
+
+.tbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 20px;
+}
+
+.tbar h1 {
+  font-family: "Fraunces", serif;
+  color: #fffbf1;
+}
+
+.loginbtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loginbtn button {
+  font-family: "Fraunces", serif;
+  color: #565aa4;
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.loginbtn input {
+  margin: 0px 10px;
+  padding: 5px;
+  font-family: "Fraunces", serif;
+  color: #565aa4;
+  font-weight: 600;
+  font-size: 1rem;
+}
 
 /* ---------- PHRASES ------------------------------- */
 .phrases {

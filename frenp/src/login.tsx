@@ -8,19 +8,21 @@ type Phrase = {
 }
 
 
-export function Public() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+export function Public({ children }: { children?: React.ReactNode }) {
+    // const [email, setEmail] = useState('')
+    // const [password, setPassword] = useState('')
     const [phrases, setPhrases] = useState<Phrase[]>([])
     // const [loading, setLoading] = useState(true)
 
-    const login = async () => {
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        })
-        if (error) alert(error.message)
-    }
+
+    // login to supabase with email and password
+    // const login = async () => {
+    //     const { error } = await supabase.auth.signInWithPassword({
+    //         email,
+    //         password
+    //     })
+    //     if (error) alert(error.message)
+    // }
 
     useEffect(() => {
         const fetchPhrases = async () => {
@@ -56,18 +58,13 @@ export function Public() {
 
                 ))}
             </div>
-            <div className='login'>
-                <input
-                    placeholder="Email"
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    onChange={e => setPassword(e.target.value)}
-                />
-                <button onClick={login}>Login</button>
-            </div>
+            {children ? (
+                children
+            ) : (
+                <div>
+                    <h1>hello</h1>
+                </div>
+            )}
 
         </div>
     )
