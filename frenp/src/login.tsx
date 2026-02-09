@@ -12,7 +12,7 @@ export function Public() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [phrases, setPhrases] = useState<Phrase[]>([])
-    const [loading, setLoading] = useState(true)
+    // const [loading, setLoading] = useState(true)
 
     const login = async () => {
         const { error } = await supabase.auth.signInWithPassword({
@@ -35,7 +35,7 @@ export function Public() {
                 setPhrases(data ?? [])
             }
 
-            setLoading(false)
+            // setLoading(false)
         }
 
         fetchPhrases()
