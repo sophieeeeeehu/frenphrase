@@ -12,7 +12,7 @@ function Home({ user }: { user: User | null }) {
 
     if (!user) {
         return (
-            <Phrase>
+            <Phrase reloadKey={reloadKey}>
             </Phrase>
         )
     }
@@ -23,7 +23,7 @@ function Home({ user }: { user: User | null }) {
     };
 
     return (
-        <Phrase>
+        <Phrase reloadKey={reloadKey}>
             <div>
                 {isAdmin ? <AddWord onWordAdded={handleWordAdded} /> : <h1>Only Admin can add words</h1>}
             </div>
