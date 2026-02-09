@@ -1,54 +1,33 @@
-// import { useEffect, useState } from 'react'
+import { useState } from 'react'
 // import { supabase } from './supabase'
-import { Public } from './login'
+import { Phrase } from './Phrase'
 import type { User } from '@supabase/supabase-js'
 import AddWord from './addword'
 // import './App.css'
 
 
 function Home({ user }: { user: User | null }) {
-    // const [loading, setLoading] = useState(true)
-    // const [user, setUser] = useState<User | null>(null)
     const ADMIN_ID = "93c4462c-cad5-42e8-853d-0594e5e3a407";
-
-    // useEffect(() => {
-    //     // get current session
-    //     supabase.auth.getUser().then(({ data }) => {
-    //         setUser(data.user)
-    //         setLoading(false)
-    //     })
-
-    //     // listen for auth changes
-    //     const { data: listener } = supabase.auth.onAuthStateChange(
-    //         (_event, session) => {
-    //             setUser(session?.user ?? null)
-    //         }
-    //     )
-
-    //     return () => {
-    //         listener.subscription.unsubscribe()
-    //     }
-    // }, [])
-
-    // if (loading) return <p>Loading...</p>
+    const [reloadKey, setReloadKey] = useState(0);
 
     if (!user) {
         return (
-            <Public>
-                <div>NOT LOGIN</div>
-            </Public>
+            <Phrase>
+            </Phrase>
         )
     }
 
     const isAdmin = user.id === ADMIN_ID
+    const handleWordAdded = () => {
+        setReloadKey(prev => prev + 1); // triggers refetch
+    };
 
     return (
-        <Public>
+        <Phrase>
             <div>
-
-                {isAdmin ? <AddWord /> : <h1>non</h1>}
+                {isAdmin ? <AddWord onWordAdded={handleWordAdded} /> : <h1>Only Admin can add words</h1>}
             </div>
-        </Public>
+        </Phrase>
     )
 }
 

@@ -7,25 +7,24 @@ type Phrase = {
     meaning: string
 }
 
+type PhraseProps = {
+    reloadKey: number;
+    children?: React.ReactNode;
+};
 
-export function Exemples() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+
+export function Phrase({ reloadKey, children }: PhraseProps) {
     const [phrases, setPhrases] = useState<Phrase[]>([])
-    // const [loading, setLoading] = useState(true)
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    const login = async () => {
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        })
-        if (error) alert(error.message)
-    }
+    const refresh = () => {
+        setRefreshKey(prev => prev + 1);
+    };
 
     useEffect(() => {
         const fetchPhrases = async () => {
             const { data, error } = await supabase
-                .from('exemples')
+                .from('phrases')
                 .select('*')
                 .order('created_at', { ascending: false })
 
@@ -39,12 +38,20 @@ export function Exemples() {
         }
 
         fetchPhrases()
-    }, [])
+    }, [reloadKey, refreshKey])
 
 
 
     return (
         <div>
+            {children ? (
+                children
+            ) : (
+                <div>
+                    <h2>Login to add words</h2>
+                </div>
+            )}
+            <button onClick={refresh}>Click</button>
             <div className='phrases'>
                 {phrases.map((p) => (
                     <a href="/">
@@ -56,22 +63,9 @@ export function Exemples() {
 
                 ))}
             </div>
-            <div className='login'>
-                <input
-                    placeholder="email"
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="password"
-                    onChange={e => setPassword(e.target.value)}
-                />
-                <button onClick={login}>Login</button>
-            </div>
-
         </div>
     )
 }
 
 
-export default Exemples
+export default Phrase

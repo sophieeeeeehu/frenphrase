@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { supabase } from './supabase'
 
-function AddWord() {
+function AddWord({ onWordAdded }: { onWordAdded: () => void }) {
 
     const [phrase, setPhrase] = useState('')
     const [meaning, setMeaning] = useState('')
@@ -18,12 +18,13 @@ function AddWord() {
             .insert({ phrase: phrase, meaning: meaning })
 
         setLoading(false)
+
         setMeaning('')
         setPhrase('')
-
         if (error) {
             alert(error.message)
         } else {
+            onWordAdded()
             setPhrase('')
             alert('Inserted!')
         }

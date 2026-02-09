@@ -7,7 +7,6 @@ import type { User } from '@supabase/supabase-js'
 export function Banner({ user }: { user: User | null }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    // const [user, setUser] = useState<User | null>(null)
 
     const login = async () => {
         const { error } = await supabase.auth.signInWithPassword({
@@ -17,31 +16,11 @@ export function Banner({ user }: { user: User | null }) {
         if (error) alert(error.message)
     };
 
-    // useEffect(() => {
-    //     // get current session
-    //     supabase.auth.getUser().then(({ data }) => {
-    //         setUser(data.user)
-    //         // setLoading(false)
-    //     })
-
-    //     // listen for auth changes
-    //     const { data: listener } = supabase.auth.onAuthStateChange(
-    //         (_event, session) => {
-    //             setUser(session?.user ?? null)
-    //         }
-    //     )
-
-    //     return () => {
-    //         listener.subscription.unsubscribe()
-    //     }
-    // }, [])
-
     return (
         <div style={{
             margin: 0,
             border: 0,
             width: "full",
-            backgroundColor: "#cb9f9f",
         }}>
             <header className="BannerBack">
                 <div className="tbar">
@@ -74,7 +53,7 @@ export function Banner({ user }: { user: User | null }) {
             </header >
 
             {/* Page content goes here */}
-            < main >
+            < main className="content">
                 <Outlet />
             </main >
         </div >
