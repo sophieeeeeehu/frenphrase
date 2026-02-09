@@ -58,12 +58,12 @@ export function Public() {
             </div>
             <div className='login'>
                 <input
-                    placeholder="email"
+                    placeholder="Email"
                     onChange={e => setEmail(e.target.value)}
                 />
                 <input
                     type="password"
-                    placeholder="password"
+                    placeholder="Password"
                     onChange={e => setPassword(e.target.value)}
                 />
                 <button onClick={login}>Login</button>
