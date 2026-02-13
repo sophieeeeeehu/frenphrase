@@ -49,7 +49,7 @@ function Word({ user }: { user: User | null }) {
         setLoading(true)
 
         const { error } = await supabase
-            .from('exemples')
+            .from('phrases')
             .insert({ phrase: phrase, meaning: meaning, unit_id: id })
 
         setLoading(false)
