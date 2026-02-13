@@ -116,7 +116,7 @@ function Word({ user }: { user: User | null }) {
                 </div>
                 : <></>}
             <div className='phrase-title'>
-                <img src={`/public/dogs/${unit.imgname}`} alt="" />
+                <img src={`/dogs/${unit.imgname}`} alt="" />
                 <h1>{unit.unit}</h1>
             </div>
             <div className='phrases'>

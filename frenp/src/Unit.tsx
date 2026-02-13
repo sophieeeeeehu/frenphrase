@@ -46,7 +46,7 @@ function Unit({ user }: { user: User | null }) {
                 {phrases.map((p) => (
                     <a href={`/word/${p.id}`}>
                         <div key={p.id} className='unit-card'>
-                            <img src={`public/dogs/${p.imgname}`} alt="" />
+                            <img src={`/dogs/${p.imgname}`} alt="" />
                             <div className='unit-title'>
                                 <h3>{p.unit}</h3>
                             </div>
