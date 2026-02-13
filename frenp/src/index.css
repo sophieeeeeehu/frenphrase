@@ -46,10 +46,6 @@ button {
   transition: border-color 0.25s;
   border: #213547 1px solid;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
@@ -136,6 +132,7 @@ button:focus-visible {
 }
 
 .phrase h3 {
+  color: #853275;
   margin: 0px;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;

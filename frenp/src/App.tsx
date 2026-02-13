@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./Home.tsx"
+import Word from "./Word.tsx";
 import Banner from "./banner.tsx";
 import { useEffect, useState } from "react";
 import type { User } from '@supabase/supabase-js'
@@ -28,8 +28,7 @@ function App() {
     <Routes>
       <Route element={<Banner user={user} />}>
         <Route path="/" element={<Unit user={user} />} />
-        {/* <Route path="/sentence" element={<Sentence user={user} />} /> */}
-        <Route path="/word" element={<Home user={user} />} />
+        <Route path="/word/:id" element={<Word user={user} />} />
         <Route path="/phrase/:id" element={<Sentence user={user} />} />
       </Route>
     </Routes>

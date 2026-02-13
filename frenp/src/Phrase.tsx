@@ -49,7 +49,7 @@ export function Phrase({ reloadKey, children }: PhraseProps) {
             )}
             <div className='phrases'>
                 {phrases.map((p) => (
-                    <a href="/">
+                    <a href={`/phrase/${p.id}`}>
                         <div key={p.id} className='phrase'>
                             <h2>{p.phrase}</h2>
                             <h3>{p.meaning}</h3>

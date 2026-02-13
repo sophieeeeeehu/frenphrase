@@ -60,7 +60,7 @@ function Sentence({ user }: { user: User | null }) {
         const fetchPhrases = async () => {
             const { data, error } = await supabase
                 .from('phrases')
-                .select('*')
+                .select('id, phrase, meaning')
                 .eq("id", id)
                 .order('created_at', { ascending: false })
                 .single()
