@@ -35,13 +35,21 @@ function Unit({ user }: { user: User | null }) {
 
     return (
         <div>
-            {user ? <h1>Logged In</h1> : <h1>Not logged In</h1>}
+            {/* {user ? <h1>Logged In</h1> : <h1>Not logged In</h1>} */}
+            <h1 style={{
+                color: '#214e6a',
+                fontFamily: "Fraunces, serif",
+                margin: '50px',
+                fontSize: '2.7em',
+            }}>Choose a Category:</h1>
             <div className='unit'>
                 {phrases.map((p) => (
                     <a href={`/word/${p.id}`}>
-                        <div key={p.id} className='phrase'>
-                            <h2>{p.id}</h2>
-                            <h3>{p.unit}</h3>
+                        <div key={p.id} className='unit-card'>
+                            <img src={`public/dogs/${p.imgname}`} alt="" />
+                            <div className='unit-title'>
+                                <h3>{p.unit}</h3>
+                            </div>
                         </div>
                     </a>
 

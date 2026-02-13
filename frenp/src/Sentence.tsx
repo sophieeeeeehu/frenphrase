@@ -15,7 +15,11 @@ type Phrase = {
 function Sentence({ user }: { user: User | null }) {
     const { id } = useParams<{ id: string }>();
     const [chat, setChat] = useState('')
+    const [longchat, setLongchat] = useState('')
+    const [chatSent, setChatSent] = useState('')
     const [loading, setLoading] = useState<boolean>(false);
+    const [loadingLong, setLoadingLong] = useState<boolean>(false);
+    const [loadingSent, setLoadingSent] = useState<boolean>(false);
     const [sentence, setSentence] = useState('')
     const [phrases, setPhrases] = useState<Phrase | null>(null);
     const [exemple, setExemple] = useState<any[]>([])
@@ -27,6 +31,9 @@ function Sentence({ user }: { user: User | null }) {
 
     // ------------------- Mistral Le Chat Response Function ------------------ //
     const chatResponse = async () => {
+        setChat('');
+        setLongchat('');
+        setChatSent('');
         setLoading(true);
         try {
             const response3 = await client.chat.complete({
@@ -52,6 +59,69 @@ function Sentence({ user }: { user: User | null }) {
             setChat('An error occurred while fetching the response.');
         }
         setLoading(false);
+    };
+
+
+    const longchatResponse = async () => {
+        setChat('');
+        setLongchat('');
+        setChatSent('');
+        setLoadingLong(true);
+        try {
+            const response3 = await client.chat.complete({
+                model: 'mistral-medium-latest',
+                messages: [{
+                    role: 'user',
+                    content: `Verifiez si cette phrase est correcte: '${sentence}'.`
+                }],
+                temperature: 1,
+            });
+
+            const messageContent3 = response3.choices[0].message.content;
+
+            const fullContent = messageContent3;
+            if (typeof fullContent === 'string') {
+                setLongchat(fullContent);
+            } else {
+                setLongchat('Sorry, I could not get a valid response.');
+            }
+        } catch (error) {
+            console.error("Error fetching chat response:", error);
+            setLongchat('An error occurred while fetching the response.');
+        }
+        setLoadingLong(false);
+    };
+
+
+    const genSentence = async (word: string) => {
+        setChat('');
+        setLongchat('');
+        setChatSent('');
+        setLoadingSent(true);
+        try {
+            const response3 = await client.chat.complete({
+                model: 'mistral-medium-latest',
+                messages: [{
+                    role: 'user',
+                    content: `donne-moi une phrase en utilisant ce mot/ expression: '${word}' 
+                    dans ce context: '${sentence}'.`
+                }],
+                temperature: 1,
+            });
+
+            const messageContent3 = response3.choices[0].message.content;
+
+            const fullContent = messageContent3;
+            if (typeof fullContent === 'string') {
+                setChatSent(fullContent);
+            } else {
+                setChatSent('Sorry, I could not get a valid response.');
+            }
+        } catch (error) {
+            console.error("Error fetching chat response:", error);
+            setChatSent('An error occurred while fetching the response.');
+        }
+        setLoadingSent(false);
     };
 
 
@@ -151,21 +221,31 @@ function Sentence({ user }: { user: User | null }) {
                     }}
                     value={sentence}
                     onChange={e => setSentence(e.target.value)}
-                    placeholder="Enter sentence"
+                    placeholder="Enter sentence/context here"
                 />
 
                 <div>
-                    <button onClick={chatResponse} disabled={loading}>
-                        {loading ? 'Loading...' : 'Check Sentence'}
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces' }}>
+                        <button onClick={() => genSentence(phrases.phrase)} disabled={loadingSent}>
+                            {loadingLong ? 'Loading...' : 'Generate Sentence'}
+                        </button>
+                        <button onClick={chatResponse} disabled={loading}>
+                            {loading ? 'Loading...' : 'Check Sentence'}
+                        </button>
+                        <button onClick={longchatResponse} disabled={loadingLong}>
+                            {loadingLong ? 'Loading...' : 'Long Response'}
+                        </button>
+                    </div>
                     <div style={{
                         fontFamily: 'Poppins, sans-serif',
                     }}>
                         {loading ? <p>Loading response...</p> : <ReactMarkdown>{chat || ''}</ReactMarkdown>}
+                        {loadingSent ? <p>Loading response...</p> : <ReactMarkdown>{chatSent || ''}</ReactMarkdown>}
+                        {loadingLong ? <p>Loading long response...</p> : <ReactMarkdown>{longchat || ''}</ReactMarkdown>}
                     </div>
                 </div>
             </div>
-            {user ?
+            {user && (chat || longchat) ?
                 <button onClick={submit} disabled={loading}>
                     {loading ? 'Saving...' : 'Add'}
                 </button>

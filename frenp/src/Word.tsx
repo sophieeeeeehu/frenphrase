@@ -17,6 +17,7 @@ function Word({ user }: { user: User | null }) {
     const [reloadKey, setReloadKey] = useState(0);
     const [phraselist, setPhraselist] = useState<Phrase[]>([])
     const [phrase, setPhrase] = useState('')
+    const [unit, setUnit] = useState<any | null>(null)
     const [meaning, setMeaning] = useState('')
     const [loading, setLoading] = useState(false)
 
@@ -40,6 +41,28 @@ function Word({ user }: { user: User | null }) {
 
         fetchPhrases()
     }, [reloadKey])
+
+    // -------------------- Get Unit ---------------------------//
+
+    useEffect(() => {
+        setLoading(true)
+        const fetchUnit = async () => {
+            const { data, error } = await supabase
+                .from('units')
+                .select('*')
+                .eq("id", id)
+                .single()
+
+            if (error) {
+                console.error(error)
+            } else {
+                setUnit(data ?? [])
+            }
+            setLoading(false)
+        }
+        fetchUnit()
+    }, [])
+
 
 
     // --------------------- Add words ---------------------- //
@@ -65,12 +88,12 @@ function Word({ user }: { user: User | null }) {
         setReloadKey(prev => prev + 1)
     }
 
-    // if (!phrases) return <p>Loading phrases...</p>;
+    if (!unit) return <p></p>;
 
     return (
         <div>
             {user ?
-                <div>
+                <div className='add-phrase'>
                     <input
                         value={phrase}
                         onChange={e => setPhrase(e.target.value)}
@@ -81,12 +104,21 @@ function Word({ user }: { user: User | null }) {
                         onChange={e => setMeaning(e.target.value)}
                         placeholder="Enter meaning"
                     />
-                    <button onClick={submit} disabled={loading}>
-                        {loading ? 'Saving...' : 'Add'}
-                    </button>
+                    <div style={{
+                        width: '100%'
+                        , display: 'flex'
+                        , justifyContent: 'end'
+                    }}>
+                        <button onClick={submit} disabled={loading}>
+                            {loading ? 'Saving...' : 'Add'}
+                        </button>
+                    </div>
                 </div>
-                : <h2>Is Not</h2>}
-
+                : <></>}
+            <div className='phrase-title'>
+                <img src={`/public/dogs/${unit.imgname}`} alt="" />
+                <h1>{unit.unit}</h1>
+            </div>
             <div className='phrases'>
                 {phraselist.map((p) => (
                     <a href={`/phrase/${p.id}`}>
