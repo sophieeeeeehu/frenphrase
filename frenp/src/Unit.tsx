@@ -7,7 +7,7 @@ import AddWord from './addword'
 import { Mistral } from '@mistralai/mistralai';
 import ReactMarkdown from "react-markdown";
 
-function Home({ user }: { user: User | null }) {
+function Unit({ user }: { user: User | null }) {
     const ADMIN_ID = "93c4462c-cad5-42e8-853d-0594e5e3a407";
     const [reloadKey, setReloadKey] = useState(0);
     const [chat, setChat] = useState('')
@@ -85,4 +85,4 @@ function Home({ user }: { user: User | null }) {
     )
 }
 
-export default Home
+export default Unit

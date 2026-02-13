@@ -146,6 +146,24 @@ button:focus-visible {
 /* --------------------ROOT AND CONTENT --------------------------- */
 .content {
   padding: 10px 40px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+}
+
+/* -------------------VOCAB SENTENCE TITLE PAGE ---------------------*/
+.VocabTitle {
+  color: #b4552c;
+  margin-bottom: 20px;
+}
+.VocabTitle h1 {
+  font-family: "Fraunces", serif;
+  font-size: 2.5em;
+  margin: 20px 0px 5px 0px;
+}
+.VocabTitle h2 {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.5em;
+  margin: 0px;
+  font-weight: 300;
+
 }

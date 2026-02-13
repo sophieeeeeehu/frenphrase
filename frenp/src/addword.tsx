@@ -19,16 +19,18 @@ function AddWord({ onWordAdded }: { onWordAdded: () => void }) {
 
         setLoading(false)
 
-        setMeaning('')
-        setPhrase('')
+
         if (error) {
             alert(error.message)
-        } else {
-            onWordAdded()
-            setPhrase('')
-            alert('Inserted!')
         }
+
+        onWordAdded()
+        setMeaning('')
+        setPhrase('')
+        alert('Inserted!')
     }
+
+
     return (
         <div>
             <input

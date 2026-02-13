@@ -15,11 +15,7 @@ type PhraseProps = {
 
 export function Phrase({ reloadKey, children }: PhraseProps) {
     const [phrases, setPhrases] = useState<Phrase[]>([])
-    const [refreshKey, setRefreshKey] = useState(0);
 
-    const refresh = () => {
-        setRefreshKey(prev => prev + 1);
-    };
 
     useEffect(() => {
         const fetchPhrases = async () => {
@@ -38,7 +34,7 @@ export function Phrase({ reloadKey, children }: PhraseProps) {
         }
 
         fetchPhrases()
-    }, [reloadKey, refreshKey])
+    }, [reloadKey])
 
 
 
@@ -51,7 +47,6 @@ export function Phrase({ reloadKey, children }: PhraseProps) {
                     <h2>Login to add words</h2>
                 </div>
             )}
-            <button onClick={refresh}>Click</button>
             <div className='phrases'>
                 {phrases.map((p) => (
                     <a href="/">

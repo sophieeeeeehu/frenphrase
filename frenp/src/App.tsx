@@ -4,6 +4,8 @@ import Banner from "./banner.tsx";
 import { useEffect, useState } from "react";
 import type { User } from '@supabase/supabase-js'
 import { supabase } from './supabase'
+import Unit from "./Unit.tsx";
+import Sentence from "./Sentence.tsx";
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -25,7 +27,10 @@ function App() {
   return (
     <Routes>
       <Route element={<Banner user={user} />}>
-        <Route path="/" element={<Home user={user} />} />
+        <Route path="/" element={<Unit user={user} />} />
+        {/* <Route path="/sentence" element={<Sentence user={user} />} /> */}
+        <Route path="/word" element={<Home user={user} />} />
+        <Route path="/phrase/:id" element={<Sentence user={user} />} />
       </Route>
     </Routes>
   );
