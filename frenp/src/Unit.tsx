@@ -35,7 +35,7 @@ function Unit({ user }: { user: User | null }) {
 
     return (
         <div>
-            {/* {user ? <h1>Logged In</h1> : <h1>Not logged In</h1>} */}
+            {user ? <h1></h1> : <h1></h1>}
             <h1 style={{
                 color: '#214e6a',
                 fontFamily: "Fraunces, serif",
