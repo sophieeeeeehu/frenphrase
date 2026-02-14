@@ -193,6 +193,9 @@ function Sentence({ user }: { user: User | null }) {
         }
 
         setSentence('')
+        setChat('')
+        setLongchat('')
+        setChatSent('')
         alert('Inserted!')
         setAdd(prev => prev + 1)
 
@@ -226,7 +229,7 @@ function Sentence({ user }: { user: User | null }) {
                 <div>
                     <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces', flexWrap: 'wrap' }}>
                         <button onClick={() => genSentence(phrases.phrase)} disabled={loadingSent}>
-                            {loadingLong ? 'Loading...' : 'Generate Sentence'}
+                            {loadingSent ? 'Loading...' : 'Generate Sentence'}
                         </button>
                         <button onClick={chatResponse} disabled={loading}>
                             {loading ? 'Loading...' : 'Check Sentence'}
