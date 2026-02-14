@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { supabase } from './supabase'
 import type { User } from '@supabase/supabase-js'
 import { FaBars } from "react-icons/fa";
-import { HiH1 } from "react-icons/hi2";
-import { BsDisplay } from "react-icons/bs";
 
 export function Banner({ user }: { user: User | null }) {
     const [email, setEmail] = useState('')
