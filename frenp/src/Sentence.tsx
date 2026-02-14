@@ -211,7 +211,6 @@ function Sentence({ user }: { user: User | null }) {
                     style={{
                         fontFamily: 'Poppins, sans-serif',
                         width: '100%',
-                        fontSize: '20px',
                         padding: '10px',
                         marginBottom: '20px',
                         fontWeight: '300',
@@ -225,7 +224,7 @@ function Sentence({ user }: { user: User | null }) {
                 />
 
                 <div>
-                    <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces' }}>
+                    <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces', flexWrap: 'wrap' }}>
                         <button onClick={() => genSentence(phrases.phrase)} disabled={loadingSent}>
                             {loadingLong ? 'Loading...' : 'Generate Sentence'}
                         </button>
@@ -260,7 +259,7 @@ function Sentence({ user }: { user: User | null }) {
 
                 ))}
             </div>
-        </div>
+        </div >
     )
 }
 

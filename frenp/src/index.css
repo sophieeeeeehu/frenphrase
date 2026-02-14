@@ -230,6 +230,7 @@ button:focus-visible {
   font-family: "Fraunces", serif;
   margin: 0px;
   font-size: 1.5em;
+  line-height: 1.2;
   text-decoration: none;
   font-weight: 600;
 }
@@ -291,6 +292,33 @@ button:focus-visible {
 
 
 
+@media (max-width: 768px) {
+  .phrase-title {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+.phrase-title img{
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+.phrases {
+  gap:10px;
+}
+
+  .phrase-title h1 {
+    font-size: 1.8em;
+  }
+
+  .phrase h2 {
+  font-size: 1.2em;
+}
+
+.phrase h3 {
+  font-size: 1rem;
+}
+}
+
 
 
 /* --------------------ROOT AND CONTENT --------------------------- */
@@ -317,6 +345,19 @@ button:focus-visible {
   font-weight: 300;
 
 }
+
+.Chat textarea {
+  font-size: 20px;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .Chat textarea {
+  font-size: 20px;
+  border-radius: 10px;
+}
+}
+
 
 
 /* ---------------------------- UNIT ---------------------------------------- */
