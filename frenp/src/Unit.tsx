@@ -39,7 +39,8 @@ function Unit({ user }: { user: User | null }) {
             <h1 style={{
                 color: '#214e6a',
                 fontFamily: "Fraunces, serif",
-                margin: '50px',
+                // margin: '50px',
+                textAlign: 'center',
                 fontSize: '2.7em',
             }}>Choose a Category:</h1>
             <div className='unit'>

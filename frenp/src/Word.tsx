@@ -153,9 +153,12 @@ function Word({ user }: { user: User | null }) {
                             <button onClick={() => verifyWords(phrase, meaning)} disabled={verifying}>
                                 {verifying ? 'Verifying...' : 'Verify'}
                             </button>
-                            <button onClick={submit} disabled={loading}>
-                                {loading ? 'Saving...' : 'Add'}
-                            </button>
+                            {chat ?
+                                <button onClick={submit} disabled={loading}>
+                                    {loading ? 'Saving...' : 'Add'}
+                                </button>
+                                : <></>}
+
                         </div>
                     </div>
                     {verifying ? <p>Loading response...</p> : <ReactMarkdown>{chat || ''}</ReactMarkdown>}
