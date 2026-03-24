@@ -57,6 +57,7 @@ button:focus-visible {
   background-color: #FFFBF1;
 }
 
+
 /* ------------- BANNER ------------------------------ */
 .BannerBack {
   font-size: 0.6rem;
@@ -415,3 +416,31 @@ button:focus-visible {
   align-items: center;
 }
 
+
+/* --------------------------- Sentence popup ----------------------------------*/
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: white;
+  width: 70%;
+  height: 60%;
+  overflow-y:scroll;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.popup-content p {
+  padding: 0;
+  margin: 5px 0px;
+}
