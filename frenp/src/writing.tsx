@@ -31,6 +31,30 @@ function Writing({ user }: { user: User | null }) {
         fetchWriting()
     }, [])
 
+    const submit = async () => {
+        if (!title.trim()) return
+
+        setLoading(true)
+
+        const { error } = await supabase
+            .from('Writing')
+            .insert({ title: title, mywriting: mywriting, correction: correction, key_correction: keypoint })
+
+        setLoading(false)
+
+
+        if (error) {
+            alert(error.message)
+        }
+
+        setTitle('')
+        setMywriting('')
+        setCorrection('')
+        setKeypoint('')
+        alert('Inserted!')
+
+    }
+
     useEffect(() => {
         console.log("Updated writings:", writings)
     }, [])
@@ -113,7 +137,7 @@ function Writing({ user }: { user: User | null }) {
                             justifyContent: 'end',
                             gap: '10px',
                         }}>
-                            <button onClick={() => setShowPopup(false)}>
+                            <button onClick={() => { submit(); setShowPopup(false) }}>
                                 Add
                             </button>
                             <button onClick={() => setShowPopup(false)}>
@@ -135,7 +159,7 @@ function Writing({ user }: { user: User | null }) {
                     fontSize: '2.7em',
                 }}>Topics:</h1>
                 {user ? <button onClick={() => setShowPopup(true)}>
-                    Open Popup
+                    Add Writing
                 </button>
                     : <h1></h1>}
             </div>
@@ -159,7 +183,7 @@ function Writing({ user }: { user: User | null }) {
 
 function Writecontent() {
     const [loading, setLoading] = useState<boolean>(false);
-    const [content, setContent] = useState<any[]>([]);
+    const [content, setContent] = useState<any | null>(null);
     const { id } = useParams<{ id: string }>();
 
 
@@ -169,6 +193,7 @@ function Writecontent() {
                 .from('Writing')
                 .select('*')
                 .eq('id', id)
+                .single()
 
             if (error) {
                 console.log("there is an error")
@@ -188,41 +213,39 @@ function Writecontent() {
 
 
     if (loading) return <p>Loading topics...</p>;
+    if (!content) return <p></p>;
 
     return (
         <div>
             <div className='phrases'>
-                {content.map((p) => (
-                    <div>
-                        <h2 style={{
-                            color: '#0a285d',
-                            fontFamily: "Fraunces, serif",
-                            textAlign: 'left',
-                            fontWeight: '600',
-                            fontSize: '1.8rem',
-                            lineHeight: '1',
-                        }}>{p.title}</h2>
-                        <h2>writing</h2>
-                        <div className='phrase'>
-                            <div>
-                                <h3>{p.mywriting}</h3>
-                            </div>
-                        </div>
-                        <h2>Correction</h2>
-                        <div className='phrase'>
-                            <div>
-                                <h3>{p.correction}</h3>
-                            </div>
-                        </div>
-                        <h2>Key Corrections</h2>
-                        <div className='phrase'>
-                            <div>
-                                <h3>{p.key_correction}</h3>
-                            </div>
+                <div>
+                    <h2 style={{
+                        color: '#0a285d',
+                        fontFamily: "Fraunces, serif",
+                        textAlign: 'left',
+                        fontWeight: '600',
+                        fontSize: '1.8rem',
+                        lineHeight: '1',
+                    }}>{content.title}</h2>
+                    <h2>writing</h2>
+                    <div className='phrase'>
+                        <div>
+                            <h3 style={{ whiteSpace: 'pre-line' }}>{content.mywriting}</h3>
                         </div>
                     </div>
-
-                ))}
+                    <h2>Correction</h2>
+                    <div className='phrase'>
+                        <div>
+                            <h3 style={{ whiteSpace: 'pre-line' }}>{content.correction}</h3>
+                        </div>
+                    </div>
+                    <h2>Key Corrections</h2>
+                    <div className='phrase'>
+                        <div>
+                            <h3 style={{ whiteSpace: 'pre-line' }}>{content.key_correction}</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
