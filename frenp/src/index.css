@@ -109,6 +109,20 @@ button:focus-visible {
   display: none;
 }
 
+.banner-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-bar {
+  font-family: "Fraunces", serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+
 /* 📱 Mobile styles */
 @media (max-width: 768px) {
 
@@ -219,6 +233,36 @@ button:focus-visible {
   transition: 
     transform 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+
+.phrases .back a {
+  padding: 10px 20px;
+  color: #ffffff;
+  background-color: #853275;
+  border: 0px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.back a {
+  padding: 10px 20px;
+  color: #ffffff;
+  background-color: #853275;
+  border: 0px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.back a:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 10px rgba(159, 55, 149, 0.08);
 }
 
 .phrases a:hover {
@@ -444,3 +488,4 @@ button:focus-visible {
   padding: 0;
   margin: 5px 0px;
 }
+

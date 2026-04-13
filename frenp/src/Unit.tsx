@@ -55,14 +55,6 @@ function Unit({ user }: { user: User | null }) {
                     </a>
 
                 ))}
-                {user ? <a href={'/writing'}>
-                    <div key="Writing" className='unit-card'>
-                        <img src={"/dogs/10.png"} alt="" />
-                        <div className='unit-title'>
-                            <h3>Writing</h3>
-                        </div>
-                    </div>
-                </a> : <h1></h1>}
 
             </div>
 

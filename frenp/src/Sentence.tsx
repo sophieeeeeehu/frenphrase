@@ -10,6 +10,7 @@ type Phrase = {
     id: number
     phrase: string
     meaning: string
+    unit_id: number
 }
 
 function Sentence({ user }: { user: User | null }) {
@@ -130,7 +131,7 @@ function Sentence({ user }: { user: User | null }) {
         const fetchPhrases = async () => {
             const { data, error } = await supabase
                 .from('phrases')
-                .select('id, phrase, meaning')
+                .select('id, phrase, meaning, unit_id')
                 .eq("id", id)
                 .order('created_at', { ascending: false })
                 .single()
@@ -206,6 +207,9 @@ function Sentence({ user }: { user: User | null }) {
     return (
         <div>
             <div className='VocabTitle'>
+                <div className='back' style={{ marginTop: '20px' }}>
+                    <a href={`/word/${phrases.unit_id}`}>back</a>
+                </div>
                 <h1>{phrases.phrase}</h1>
                 <h2>{phrases.meaning}</h2>
             </div>

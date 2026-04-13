@@ -218,6 +218,9 @@ function Writecontent() {
     return (
         <div>
             <div className='phrases'>
+                <div className='back'>
+                    <a href="/writing">back</a>
+                </div>
                 <div>
                     <h2 style={{
                         color: '#0a285d',

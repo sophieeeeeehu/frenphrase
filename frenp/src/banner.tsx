@@ -34,29 +34,34 @@ export function Banner({ user }: { user: User | null }) {
                             <FaBars />
                         </button>
                     </div>
-                    <div className='login-laptop'>
-                        {user ? (
-                            <button onClick={() => supabase.auth.signOut()}>
-                                Logout
-                            </button>
-                        ) : (
-                            <div className="login">
-                                <div>
-                                    <input
-                                        placeholder="Email"
-                                        onChange={e => setEmail(e.target.value)}
-                                    />
-                                    <input
-                                        type="password"
-                                        placeholder="Password"
-                                        onChange={e => setPassword(e.target.value)}
-                                    />
-                                    <button onClick={login}>Login</button>
+                    <div className="banner-right">
+                        <a className="nav-bar" href="/writing">Writing</a>
+                        <a className="nav-bar" href="/">Vocab</a>
+                        <div className='login-laptop'>
+                            {user ? (
+                                <button onClick={() => supabase.auth.signOut()}>
+                                    Logout
+                                </button>
+                            ) : (
+                                <div className="login">
+                                    <div>
+                                        <input
+                                            placeholder="Email"
+                                            onChange={e => setEmail(e.target.value)}
+                                        />
+                                        <input
+                                            type="password"
+                                            placeholder="Password"
+                                            onChange={e => setPassword(e.target.value)}
+                                        />
+                                        <button onClick={login}>Login</button>
+                                    </div>
                                 </div>
-                            </div>
 
-                        )}
+                            )}
+                        </div>
                     </div>
+
 
                 </div>
                 <div className="login-mobile" style={{ display: open ? 'block' : 'none' }}>
