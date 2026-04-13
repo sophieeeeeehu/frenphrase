@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
 // import './App.css'
-import { Mistral } from '@mistralai/mistralai';
+// import { Mistral } from '@mistralai/mistralai';
 import type { User } from '@supabase/supabase-js'
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
+import {
+    checkSentence,
+    checkSentenceLong,
+    generateSentence
+} from './mistral';
+
 
 type Phrase = {
     id: number
@@ -26,102 +32,149 @@ function Sentence({ user }: { user: User | null }) {
     const [exemple, setExemple] = useState<any[]>([])
     const [add, setAdd] = useState(0)
 
-    const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
-
-    const client = new Mistral({ apiKey: apiKey });
 
     // ------------------- Mistral Le Chat Response Function ------------------ //
-    const chatResponse = async () => {
+    // const chatResponse = async (sentence: string) => {
+    //     setChat('');
+    //     setLongchat('');
+    //     setChatSent('');
+    //     setLoading(true);
+    //     try {
+    //         const response3 = await client.chat.complete({
+    //             model: 'mistral-medium-latest',
+    //             messages: [{
+    //                 role: 'user',
+    //                 content: `Verifiez si cette phrase est correcte: '${sentence}'.
+    //                 Répondre d'une manière simple, sans trop d'explications.`
+    //             }],
+    //             temperature: 1,
+    //         });
+
+    //         const messageContent3 = response3.choices[0].message.content;
+
+    //         const fullContent = messageContent3;
+    //         if (typeof fullContent === 'string') {
+    //             setChat(fullContent);
+    //         } else {
+    //             setChat('Sorry, I could not get a valid response.');
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching chat response:", error);
+    //         setChat('An error occurred while fetching the response.');
+    //     }
+    //     setLoading(false);
+    // };
+
+    const chatResponse = async (sentence: string) => {
         setChat('');
         setLongchat('');
         setChatSent('');
         setLoading(true);
+
         try {
-            const response3 = await client.chat.complete({
-                model: 'mistral-medium-latest',
-                messages: [{
-                    role: 'user',
-                    content: `Verifiez si cette phrase est correcte: '${sentence}'.
-                    Répondre d'une manière simple, sans trop d'explications.`
-                }],
-                temperature: 1,
-            });
+            const result = await checkSentence(sentence);
 
-            const messageContent3 = response3.choices[0].message.content;
-
-            const fullContent = messageContent3;
-            if (typeof fullContent === 'string') {
-                setChat(fullContent);
+            if (typeof result === 'string') {
+                setChat(result);
             } else {
-                setChat('Sorry, I could not get a valid response.');
+                setChat('Invalid response');
             }
-        } catch (error) {
-            console.error("Error fetching chat response:", error);
-            setChat('An error occurred while fetching the response.');
+        } catch (err) {
+            console.error(err);
+            setChat('Error occurred');
         }
+
         setLoading(false);
     };
 
-
-    const longchatResponse = async () => {
+    const longchatResponse = async (sentence: string) => {
         setChat('');
         setLongchat('');
         setChatSent('');
         setLoadingLong(true);
         try {
-            const response3 = await client.chat.complete({
-                model: 'mistral-medium-latest',
-                messages: [{
-                    role: 'user',
-                    content: `Verifiez si cette phrase est correcte: '${sentence}'.`
-                }],
-                temperature: 1,
-            });
+            const result = await checkSentenceLong(sentence);
 
-            const messageContent3 = response3.choices[0].message.content;
-
-            const fullContent = messageContent3;
-            if (typeof fullContent === 'string') {
-                setLongchat(fullContent);
+            if (typeof result === 'string') {
+                setLongchat(result);
             } else {
-                setLongchat('Sorry, I could not get a valid response.');
+                setLongchat('Invalid response');
             }
-        } catch (error) {
-            console.error("Error fetching chat response:", error);
-            setLongchat('An error occurred while fetching the response.');
+        } catch (err) {
+            console.error(err);
+            setLongchat('Error occurred');
         }
+
+        // try {
+        //     const response3 = await client.chat.complete({
+        //         model: 'mistral-medium-latest',
+        //         messages: [{
+        //             role: 'user',
+        //             content: `Verifiez si cette phrase est correcte: '${sentence}'.`
+        //         }],
+        //         temperature: 1,
+        //     });
+
+        //     const messageContent3 = response3.choices[0].message.content;
+
+        //     const fullContent = messageContent3;
+        //     if (typeof fullContent === 'string') {
+        //         setLongchat(fullContent);
+        //     } else {
+        //         setLongchat('Sorry, I could not get a valid response.');
+        //     }
+        // } catch (error) {
+        //     console.error("Error fetching chat response:", error);
+        //     setLongchat('An error occurred while fetching the response.');
+        // }
         setLoadingLong(false);
     };
 
 
-    const genSentence = async (word: string) => {
+    const genSentence = async (word: string, sentence: string) => {
         setChat('');
         setLongchat('');
         setChatSent('');
         setLoadingSent(true);
+
+
         try {
-            const response3 = await client.chat.complete({
-                model: 'mistral-medium-latest',
-                messages: [{
-                    role: 'user',
-                    content: `donne-moi une phrase en utilisant ce mot/ expression: '${word}' 
-                    dans ce context: '${sentence}'.`
-                }],
-                temperature: 1,
-            });
+            const result = await generateSentence(word, sentence);
 
-            const messageContent3 = response3.choices[0].message.content;
-
-            const fullContent = messageContent3;
-            if (typeof fullContent === 'string') {
-                setChatSent(fullContent);
+            if (typeof result === 'string') {
+                setChatSent(result);
             } else {
-                setChatSent('Sorry, I could not get a valid response.');
+                setChatSent('Invalid response');
             }
-        } catch (error) {
-            console.error("Error fetching chat response:", error);
-            setChatSent('An error occurred while fetching the response.');
+        } catch (err) {
+            console.error(err);
+            setChatSent('Error occurred');
         }
+
+
+        // try {
+        //     const response3 = await client.chat.complete({
+        //         model: 'mistral-medium-latest',
+        //         messages: [{
+        //             role: 'user',
+        //             content: `donne-moi une phrase en utilisant ce mot/ expression: '${word}' 
+        //             dans ce context: '${sentence}'.`
+        //         }],
+        //         temperature: 1,
+        //     });
+
+        //     const messageContent3 = response3.choices[0].message.content;
+
+        //     const fullContent = messageContent3;
+        //     if (typeof fullContent === 'string') {
+        //         setChatSent(fullContent);
+        //     } else {
+        //         setChatSent('Sorry, I could not get a valid response.');
+        //     }
+        // } catch (error) {
+        //     console.error("Error fetching chat response:", error);
+        //     setChatSent('An error occurred while fetching the response.');
+        // }
         setLoadingSent(false);
     };
 
@@ -232,13 +285,13 @@ function Sentence({ user }: { user: User | null }) {
 
                 <div>
                     <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces', flexWrap: 'wrap' }}>
-                        <button onClick={() => genSentence(phrases.phrase)} disabled={loadingSent}>
+                        <button onClick={() => genSentence(phrases.phrase, sentence)} disabled={loadingSent}>
                             {loadingSent ? 'Loading...' : 'Generate Sentence'}
                         </button>
-                        <button onClick={chatResponse} disabled={loading}>
-                            {loading ? 'Loading...' : 'Check Sentence'}
+                        <button onClick={() => chatResponse(sentence)} disabled={loading}>
+                            {loading ? 'Loading...' : 'Check Sentence v2'}
                         </button>
-                        <button onClick={longchatResponse} disabled={loadingLong}>
+                        <button onClick={() => longchatResponse(sentence)} disabled={loadingLong}>
                             {loadingLong ? 'Loading...' : 'Long Response'}
                         </button>
                     </div>
