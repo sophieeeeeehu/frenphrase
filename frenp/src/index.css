@@ -239,7 +239,7 @@ button:focus-visible {
 .phrases .back a {
   padding: 10px 20px;
   color: #ffffff;
-  background-color: #cbc1a8;
+  background-color: #853275;
   border: 0px;
   border-radius: 15px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
@@ -251,7 +251,7 @@ button:focus-visible {
 .back a {
   padding: 10px 20px;
   color: #ffffff;
-  background-color: #cbc1a8;
+  background-color: #853275;
   border: 0px;
   border-radius: 15px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
@@ -336,7 +336,6 @@ button:focus-visible {
 }
 
 
-
 @media (max-width: 768px) {
   .phrase-title {
     flex-direction: row;
@@ -371,6 +370,10 @@ button:focus-visible {
   padding: 10px 40px;
   max-width: 900px;
   margin: 0 auto;
+}
+
+.content-wide {
+  max-width: 1200px; /* or full width */
 }
 
 /* -------------------VOCAB SENTENCE TITLE PAGE ---------------------*/

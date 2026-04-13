@@ -1,0 +1,235 @@
+import { useState, useEffect } from 'react'
+import { supabase } from './supabase'
+import { useParams } from "react-router-dom";
+import type { User } from '@supabase/supabase-js'
+
+function News({ user }: { user: User | null }) {
+    // for adding news and displaying news list
+    const [loading, setLoading] = useState<boolean>(false);
+    const [newslist, setNewsList] = useState<any[]>([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [title, setTitle] = useState("")
+    // const [mywriting, setMywriting] = useState("")
+    const [source, setSource] = useState("")
+    const [article, setArticle] = useState("")
+    // const [correction, setCorrection] = useState("")
+    // const [keypoint, setKeypoint] = useState("")
+
+
+    useEffect(() => {
+        const fetchNews = async () => {
+            const { data, error } = await supabase
+                .from('news')
+                .select('*')
+                .order('id', { ascending: true })
+
+            if (error) {
+                console.error(error)
+            } else {
+                setNewsList(data ?? [])
+            }
+
+            setLoading(false)
+        }
+        fetchNews()
+    }, [])
+
+    const submit = async () => {
+        if (!title.trim()) return
+
+        setLoading(true)
+
+        const { error } = await supabase
+            .from('news')
+            .insert({ title: title, source: source, article: article })
+
+        setLoading(false)
+
+
+        if (error) {
+            alert(error.message)
+        }
+
+        setTitle('')
+        setSource('')
+        setArticle('')
+        alert('Inserted!')
+
+    }
+
+    useEffect(() => {
+        console.log("Updated news:", newslist)
+    }, [])
+
+
+    if (loading) return <p>Loading topics...</p>;
+
+    return (
+        <div>
+            {showPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h2>Add New Writings</h2>
+                        <p>Title:</p>
+                        <textarea
+                            style={{
+                                fontFamily: 'Poppins, sans-serif',
+                                width: '100%',
+                                padding: '10px',
+                                marginBottom: '0px',
+                                fontWeight: '300',
+                                minHeight: '20px',
+                                borderRadius: '5px',
+                                border: '1px solid #443789',
+                            }}
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
+                            placeholder="Enter sentence/context here"
+                        />
+                        <p>Source:</p>
+                        <textarea
+                            style={{
+                                fontFamily: 'Poppins, sans-serif',
+                                width: '100%',
+                                padding: '10px',
+                                marginBottom: '0px',
+                                fontWeight: '300',
+                                minHeight: '20px',
+                                borderRadius: '5px',
+                                border: '1px solid #443789',
+                            }}
+                            value={source}
+                            onChange={e => setSource(e.target.value)}
+                            placeholder="Enter sentence/context here"
+                        />
+                        <p>Article:</p>
+                        <textarea
+                            style={{
+                                fontFamily: 'Poppins, sans-serif',
+                                width: '100%',
+                                padding: '10px',
+                                marginBottom: '0px',
+                                fontWeight: '300',
+                                minHeight: '120px',
+                                borderRadius: '5px',
+                                border: '1px solid #443789',
+                            }}
+                            value={article}
+                            onChange={e => setArticle(e.target.value)}
+                            placeholder="Enter sentence/context here"
+                        />
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'end',
+                            gap: '10px',
+                        }}>
+                            <button onClick={() => { submit(); setShowPopup(false) }}>
+                                Add
+                            </button>
+                            <button onClick={() => setShowPopup(false)}>
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+            }}>
+                <h1 style={{
+                    color: '#214e6a',
+                    fontFamily: "Fraunces, serif",
+                    fontSize: '2.7em',
+                }}>News list</h1>
+                {user ? <button onClick={() => setShowPopup(true)}>
+                    Add News
+                </button>
+                    : <h1></h1>}
+            </div>
+            <div className='phrases'>
+                {newslist.map((p) => (
+                    <a href={`/news/${p.id}`}>
+                        <div key={p.id} className='phrase'>
+                            <div>
+                                <h2>{p.title}</h2>
+                                <h3>{p.source}, {p.created_at}</h3>
+                            </div>
+                        </div>
+                    </a>
+
+                ))}
+            </div>
+
+        </div>
+    )
+};
+
+
+function NewsContent() {
+    // for displaying news content
+    const [loading, setLoading] = useState<boolean>(false);
+    const [content, setContent] = useState<any | null>(null);
+    const { id } = useParams<{ id: string }>();
+
+
+    useEffect(() => {
+        const fetchNews = async () => {
+            const { data, error } = await supabase
+                .from('news')
+                .select('*')
+                .eq('id', id)
+                .single()
+
+            if (error) {
+                console.log("there is an error")
+                console.error(error)
+            } else {
+                setContent(data ?? [])
+            }
+
+            setLoading(false)
+        }
+        fetchNews()
+    }, [])
+
+    useEffect(() => {
+        console.log("Updated news:", content)
+    }, [])
+
+
+    if (loading) return <p>Loading topics...</p>;
+    if (!content) return <p></p>;
+
+    return (
+        <div>
+            <div className='phrases'>
+                <div className='back'>
+                    <a href="/news">back</a>
+                </div>
+                <h1>EDIT NEEDED HERE</h1>
+                <div>
+                    <h2 style={{
+                        color: '#0a285d',
+                        fontFamily: "Fraunces, serif",
+                        textAlign: 'left',
+                        fontWeight: '600',
+                        fontSize: '1.8rem',
+                        lineHeight: '1',
+                    }}>{content.title}</h2>
+                    <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic' }}>
+                        {content.source}, {content.created_at}</h4>
+                    <div className='phrase'>
+                        <div>
+                            <h3 style={{ whiteSpace: 'pre-line', color: '#0a285d' }}>{content.article}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { News, NewsContent }

@@ -7,6 +7,7 @@ import { supabase } from './supabase'
 import Unit from "./Unit.tsx";
 import Sentence from "./Sentence.tsx";
 import { Writing, Writecontent } from "./writing.tsx";
+import { News, NewsContent } from "./news.tsx";
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -33,6 +34,8 @@ function App() {
         <Route path="/phrase/:id" element={<Sentence user={user} />} />
         <Route path="/writing" element={<Writing user={user} />} />
         <Route path="/writing/:id" element={<Writecontent />} />
+        <Route path="/news" element={<News user={user} />} />
+        <Route path="/news/:id" element={<NewsContent />} />
       </Route>
     </Routes>
   );

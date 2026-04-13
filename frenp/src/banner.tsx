@@ -1,4 +1,5 @@
-import { Outlet } from "react-router-dom";
+// import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useState } from 'react'
 import { supabase } from './supabase'
 import type { User } from '@supabase/supabase-js'
@@ -9,6 +10,7 @@ export function Banner({ user }: { user: User | null }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [open, setOpen] = useState(false);
+    const location = useLocation();
 
     const login = async () => {
         const { error } = await supabase.auth.signInWithPassword({
@@ -39,10 +41,10 @@ export function Banner({ user }: { user: User | null }) {
                         {user ? (
                             <>
                                 <a className="nav-bar" href="/writing">Writing</a>
-                                <a className="nav-bar" href="/">News</a>
+                                <a className="nav-bar" href="/news">News</a>
                             </>
                         ) : <>
-                            <a className="nav-bar" href="/">News</a>
+                            <a className="nav-bar" href="/news">News</a>
                         </>}
                         <div className='login-laptop'>
                             {user ? (
@@ -113,9 +115,15 @@ export function Banner({ user }: { user: User | null }) {
             </header >
 
             {/* Page content goes here */}
-            < main className="content" >
+            {/* < main className="content" >
                 <Outlet />
-            </main >
+            </main > */}
+            <main
+                className={`content ${location.pathname.includes("news/") ? "content-wide" : ""
+                    }`}
+            >
+                <Outlet />
+            </main>
         </div >
     );
 }

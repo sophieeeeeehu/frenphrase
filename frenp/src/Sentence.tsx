@@ -34,37 +34,6 @@ function Sentence({ user }: { user: User | null }) {
 
 
     // ------------------- Mistral Le Chat Response Function ------------------ //
-    // const chatResponse = async (sentence: string) => {
-    //     setChat('');
-    //     setLongchat('');
-    //     setChatSent('');
-    //     setLoading(true);
-    //     try {
-    //         const response3 = await client.chat.complete({
-    //             model: 'mistral-medium-latest',
-    //             messages: [{
-    //                 role: 'user',
-    //                 content: `Verifiez si cette phrase est correcte: '${sentence}'.
-    //                 Répondre d'une manière simple, sans trop d'explications.`
-    //             }],
-    //             temperature: 1,
-    //         });
-
-    //         const messageContent3 = response3.choices[0].message.content;
-
-    //         const fullContent = messageContent3;
-    //         if (typeof fullContent === 'string') {
-    //             setChat(fullContent);
-    //         } else {
-    //             setChat('Sorry, I could not get a valid response.');
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching chat response:", error);
-    //         setChat('An error occurred while fetching the response.');
-    //     }
-    //     setLoading(false);
-    // };
-
     const chatResponse = async (sentence: string) => {
         setChat('');
         setLongchat('');
@@ -104,29 +73,6 @@ function Sentence({ user }: { user: User | null }) {
             console.error(err);
             setLongchat('Error occurred');
         }
-
-        // try {
-        //     const response3 = await client.chat.complete({
-        //         model: 'mistral-medium-latest',
-        //         messages: [{
-        //             role: 'user',
-        //             content: `Verifiez si cette phrase est correcte: '${sentence}'.`
-        //         }],
-        //         temperature: 1,
-        //     });
-
-        //     const messageContent3 = response3.choices[0].message.content;
-
-        //     const fullContent = messageContent3;
-        //     if (typeof fullContent === 'string') {
-        //         setLongchat(fullContent);
-        //     } else {
-        //         setLongchat('Sorry, I could not get a valid response.');
-        //     }
-        // } catch (error) {
-        //     console.error("Error fetching chat response:", error);
-        //     setLongchat('An error occurred while fetching the response.');
-        // }
         setLoadingLong(false);
     };
 
@@ -150,31 +96,6 @@ function Sentence({ user }: { user: User | null }) {
             console.error(err);
             setChatSent('Error occurred');
         }
-
-
-        // try {
-        //     const response3 = await client.chat.complete({
-        //         model: 'mistral-medium-latest',
-        //         messages: [{
-        //             role: 'user',
-        //             content: `donne-moi une phrase en utilisant ce mot/ expression: '${word}' 
-        //             dans ce context: '${sentence}'.`
-        //         }],
-        //         temperature: 1,
-        //     });
-
-        //     const messageContent3 = response3.choices[0].message.content;
-
-        //     const fullContent = messageContent3;
-        //     if (typeof fullContent === 'string') {
-        //         setChatSent(fullContent);
-        //     } else {
-        //         setChatSent('Sorry, I could not get a valid response.');
-        //     }
-        // } catch (error) {
-        //     console.error("Error fetching chat response:", error);
-        //     setChatSent('An error occurred while fetching the response.');
-        // }
         setLoadingSent(false);
     };
 
@@ -284,12 +205,12 @@ function Sentence({ user }: { user: User | null }) {
                 />
 
                 <div>
-                    <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '10px', fontFamily: 'Fraunces', flexWrap: 'wrap', justifyContent: 'end' }}>
                         <button onClick={() => genSentence(phrases.phrase, sentence)} disabled={loadingSent}>
                             {loadingSent ? 'Loading...' : 'Generate Sentence'}
                         </button>
                         <button onClick={() => chatResponse(sentence)} disabled={loading}>
-                            {loading ? 'Loading...' : 'Check Sentence v2'}
+                            {loading ? 'Loading...' : 'Check Sentence'}
                         </button>
                         <button onClick={() => longchatResponse(sentence)} disabled={loadingLong}>
                             {loadingLong ? 'Loading...' : 'Long Response'}
