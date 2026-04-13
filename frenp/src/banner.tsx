@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { supabase } from './supabase'
 import type { User } from '@supabase/supabase-js'
 import { FaBars } from "react-icons/fa";
+import { DiVim } from "react-icons/di";
 
 export function Banner({ user }: { user: User | null }) {
     const [email, setEmail] = useState('')
@@ -35,8 +36,14 @@ export function Banner({ user }: { user: User | null }) {
                         </button>
                     </div>
                     <div className="banner-right">
-                        <a className="nav-bar" href="/writing">Writing</a>
-                        <a className="nav-bar" href="/">Vocab</a>
+                        {user ? (
+                            <>
+                                <a className="nav-bar" href="/writing">Writing</a>
+                                <a className="nav-bar" href="/">News</a>
+                            </>
+                        ) : <>
+                            <a className="nav-bar" href="/">News</a>
+                        </>}
                         <div className='login-laptop'>
                             {user ? (
                                 <button onClick={() => supabase.auth.signOut()}>
