@@ -3,7 +3,7 @@ import { supabase } from './supabase'
 import { Outlet } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import type { User } from '@supabase/supabase-js'
-import { MdCottage } from "react-icons/md";
+import { MdOutlineReply } from "react-icons/md";
 
 function News({ user }: { user: User | null }) {
     // for adding news and displaying news list
@@ -11,7 +11,7 @@ function News({ user }: { user: User | null }) {
     const [newslist, setNewsList] = useState<any[]>([]);
     const [showPopup, setShowPopup] = useState(false);
     const [title, setTitle] = useState("")
-    // const [mywriting, setMywriting] = useState("")
+    const [url, setUrl] = useState("")
     const [source, setSource] = useState("")
     const [article, setArticle] = useState("")
     // const [correction, setCorrection] = useState("")
@@ -103,6 +103,22 @@ function News({ user }: { user: User | null }) {
                             value={source}
                             onChange={e => setSource(e.target.value)}
                             placeholder="Enter sentence/context here"
+                        />
+                        <p>URL:</p>
+                        <textarea
+                            style={{
+                                fontFamily: 'Poppins, sans-serif',
+                                width: '100%',
+                                padding: '10px',
+                                marginBottom: '0px',
+                                fontWeight: '300',
+                                minHeight: '20px',
+                                borderRadius: '5px',
+                                border: '1px solid #443789',
+                            }}
+                            value={url}
+                            onChange={e => setUrl(e.target.value)}
+                            placeholder="Enter article URL here"
                         />
                         <p>Article:</p>
                         <textarea
@@ -209,7 +225,7 @@ function NewsContent() {
         <div>
             <div className='back-icon' style={{ marginTop: '20px' }}>
                 <a href="/news" style={{ color: '#1e6b8f' }}>
-                    <MdCottage />
+                    <MdOutlineReply />
                     <h3>back to news list</h3></a>
             </div>
             <div style={{ display: "flex", gap: "20px" }}>
@@ -217,15 +233,17 @@ function NewsContent() {
                     <div className='phrases'>
 
                         <div>
-                            <h2 style={{
-                                color: '#0a285d',
-                                fontFamily: "Fraunces, serif",
-                                textAlign: 'left',
-                                fontWeight: '600',
-                                fontSize: '1.8rem',
-                                lineHeight: '1',
-                            }}>{content.title}</h2>
-                            <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic' }}>
+                            <a href={content.url} style={{ border: '0px', padding: '0px', margin: '0px' }} target="_blank" rel="noopener noreferrer">
+                                <h2 style={{
+                                    color: '#0a285d',
+                                    fontFamily: "Fraunces, serif",
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    fontSize: '1.8rem',
+                                    lineHeight: '1',
+                                }}>{content.title}</h2>
+                            </a>
+                            <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic', marginTop: '0px' }}>
                                 {content.source}, {content.created_at}</h4>
                             <div className='phrase'>
                                 <div>
