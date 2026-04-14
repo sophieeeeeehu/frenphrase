@@ -36,7 +36,6 @@ function Unit({ user }: { user: User | null }) {
 
     return (
         <div>
-            <h1>HELLO</h1>
             {user ? <h1></h1> : <h1></h1>}
             <h1 style={{
                 color: '#214e6a',
