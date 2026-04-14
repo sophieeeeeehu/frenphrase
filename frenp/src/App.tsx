@@ -8,6 +8,7 @@ import Unit from "./Unit.tsx";
 import Sentence from "./Sentence.tsx";
 import { Writing, Writecontent } from "./writing.tsx";
 import { News, NewsContent } from "./news.tsx";
+import NewsVocab from "./newsvocab.tsx";
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -31,11 +32,27 @@ function App() {
       <Route element={<Banner user={user} />}>
         <Route path="/" element={<Unit user={user} />} />
         <Route path="/word/:id" element={<Word user={user} />} />
-        <Route path="/phrase/:id" element={<Sentence user={user} />} />
+        <Route path="/phrase/:phraseId" element={<Sentence user={user} />} />
         <Route path="/writing" element={<Writing user={user} />} />
         <Route path="/writing/:id" element={<Writecontent />} />
         <Route path="/news" element={<News user={user} />} />
-        <Route path="/news/:id" element={<NewsContent />} />
+        {/* <Route element={<NewsContent />}>
+          <Route path="/news/:id" element={<NewsVocab user={user} />} />
+          <Route path="/news/:id/phrase/:id" element={<Sentence user={user} />} />
+        </Route> 
+        <Route path="/news" element={<News user={user} />}>
+          <Route path=":id" element={<NewsContent />}>
+
+            <Route index element={<NewsVocab user={user} />} />
+
+            <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
+
+          </Route>
+        </Route>*/}
+        <Route path="/news/:id" element={<NewsContent />}>
+          <Route index element={<NewsVocab user={user} />} />
+          <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
+        </Route>
       </Route>
     </Routes>
   );

@@ -113,11 +113,6 @@ export function Banner({ user }: { user: User | null }) {
                     )}
                 </div>
             </header >
-
-            {/* Page content goes here */}
-            {/* < main className="content" >
-                <Outlet />
-            </main > */}
             <main
                 className={`content ${location.pathname.includes("news/") ? "content-wide" : ""
                     }`}

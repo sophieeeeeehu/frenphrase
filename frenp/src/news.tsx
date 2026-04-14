@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
+import { Outlet } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import type { User } from '@supabase/supabase-js'
+import { MdCottage } from "react-icons/md";
 
 function News({ user }: { user: User | null }) {
     // for adding news and displaying news list
@@ -205,27 +207,36 @@ function NewsContent() {
 
     return (
         <div>
-            <div className='phrases'>
-                <div className='back'>
-                    <a href="/news">back</a>
-                </div>
-                <h1>EDIT NEEDED HERE</h1>
-                <div>
-                    <h2 style={{
-                        color: '#0a285d',
-                        fontFamily: "Fraunces, serif",
-                        textAlign: 'left',
-                        fontWeight: '600',
-                        fontSize: '1.8rem',
-                        lineHeight: '1',
-                    }}>{content.title}</h2>
-                    <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic' }}>
-                        {content.source}, {content.created_at}</h4>
-                    <div className='phrase'>
+            <div className='back-icon' style={{ marginTop: '20px' }}>
+                <a href="/news" style={{ color: '#1e6b8f' }}>
+                    <MdCottage />
+                    <h3>back to news list</h3></a>
+            </div>
+            <div style={{ display: "flex", gap: "20px" }}>
+                <div className='news-left' style={{ width: "700px" }}>
+                    <div className='phrases'>
+
                         <div>
-                            <h3 style={{ whiteSpace: 'pre-line', color: '#0a285d' }}>{content.article}</h3>
+                            <h2 style={{
+                                color: '#0a285d',
+                                fontFamily: "Fraunces, serif",
+                                textAlign: 'left',
+                                fontWeight: '600',
+                                fontSize: '1.8rem',
+                                lineHeight: '1',
+                            }}>{content.title}</h2>
+                            <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic' }}>
+                                {content.source}, {content.created_at}</h4>
+                            <div className='phrase'>
+                                <div>
+                                    <h3 style={{ whiteSpace: 'pre-line', color: '#0a285d' }}>{content.article}</h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div style={{ flex: 1, marginTop: '40px' }}>
+                    <Outlet />
                 </div>
             </div>
         </div>

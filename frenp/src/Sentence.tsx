@@ -4,7 +4,8 @@ import { supabase } from './supabase'
 // import { Mistral } from '@mistralai/mistralai';
 import type { User } from '@supabase/supabase-js'
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { MdArrowBack, MdArrowBackIos } from "react-icons/md";
 import {
     checkSentence,
     checkSentenceLong,
@@ -17,10 +18,11 @@ type Phrase = {
     phrase: string
     meaning: string
     unit_id: number
+    news_id: number
 }
 
 function Sentence({ user }: { user: User | null }) {
-    const { id } = useParams<{ id: string }>();
+    const { phraseId } = useParams<{ phraseId: string }>();
     const [chat, setChat] = useState('')
     const [longchat, setLongchat] = useState('')
     const [chatSent, setChatSent] = useState('')
@@ -105,8 +107,8 @@ function Sentence({ user }: { user: User | null }) {
         const fetchPhrases = async () => {
             const { data, error } = await supabase
                 .from('phrases')
-                .select('id, phrase, meaning, unit_id')
-                .eq("id", id)
+                .select('id, phrase, meaning, unit_id, news_id')
+                .eq("id", phraseId)
                 .order('created_at', { ascending: false })
                 .single()
 
@@ -131,7 +133,7 @@ function Sentence({ user }: { user: User | null }) {
             const { data, error } = await supabase
                 .from('exemples')
                 .select('*')
-                .eq("phrase_id", id)
+                .eq("phrase_id", phraseId)
                 .order('created_at', { ascending: false })
 
             if (error) {
@@ -158,7 +160,7 @@ function Sentence({ user }: { user: User | null }) {
 
         const { error } = await supabase
             .from('exemples')
-            .insert({ exemple: sentence, phrase_id: id })
+            .insert({ exemple: sentence, phrase_id: phraseId })
 
         setLoading(false)
 
@@ -180,13 +182,17 @@ function Sentence({ user }: { user: User | null }) {
 
     return (
         <div>
-            <div className='VocabTitle'>
-                <div className='back' style={{ marginTop: '20px' }}>
-                    <a href={`/word/${phrases.unit_id}`}>back</a>
+            <div>
+                <div className='back-icon' style={{ marginTop: '20px', display: 'flex' }}>
+                    {phrases.unit_id == 11 ? <Link to={`/news/${phrases.news_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></Link>
+                        : <a href={`/word/${phrases.unit_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></a>}
                 </div>
-                <h1>{phrases.phrase}</h1>
-                <h2>{phrases.meaning}</h2>
+                <div className='VocabTitle'>
+                    <h1>{phrases.phrase}</h1>
+                    <h2>{phrases.meaning}</h2>
+                </div>
             </div>
+
             <div className="Chat">
                 <textarea
                     style={{

@@ -260,6 +260,28 @@ button:focus-visible {
     box-shadow 0.2s ease;
 }
 
+.back-icon a {
+  display: flex;
+  align-items: center;
+  padding: 0px;
+  margin: -5px;
+  font-size: 25px;
+  /* background-color: rgb(151, 163, 162); */
+  min-width: 100px;
+  border: 0px;
+}
+
+.back-icon a h3{
+  display: flex;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  margin: -5px;
+  padding-left: 10px;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+
 .back a:hover {
   transform: translateY(-2px);
   box-shadow: 4px 6px 10px rgba(159, 55, 149, 0.08);
