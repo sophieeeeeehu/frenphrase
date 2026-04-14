@@ -23,7 +23,7 @@ function News({ user }: { user: User | null }) {
             const { data, error } = await supabase
                 .from('news')
                 .select('*')
-                .order('id', { ascending: true })
+                .order('id', { ascending: false })
 
             if (error) {
                 console.error(error)
