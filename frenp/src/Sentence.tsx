@@ -5,7 +5,7 @@ import { supabase } from './supabase'
 import type { User } from '@supabase/supabase-js'
 import ReactMarkdown from "react-markdown";
 import { useParams, Link } from "react-router-dom";
-import { MdArrowBack, MdArrowBackIos } from "react-icons/md";
+import { MdArrowBack } from "react-icons/md";
 import {
     checkSentence,
     checkSentenceLong,
