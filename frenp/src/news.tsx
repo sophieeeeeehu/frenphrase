@@ -43,7 +43,7 @@ function News({ user }: { user: User | null }) {
 
         const { error } = await supabase
             .from('news')
-            .insert({ title: title, source: source, article: article })
+            .insert({ title: title, source: source, article: article, url: url })
 
         setLoading(false)
 
@@ -233,7 +233,7 @@ function NewsContent() {
                     <div className='phrases'>
 
                         <div>
-                            <a href={content.url} style={{ border: '0px', padding: '0px', margin: '0px' }} target="_blank" rel="noopener noreferrer">
+                            <a href={content.url} style={{ border: '0px', padding: '0px', margin: '0px' }} target='_blank' rel="noopener noreferrer">
                                 <h2 style={{
                                     color: '#0a285d',
                                     fontFamily: "Fraunces, serif",
