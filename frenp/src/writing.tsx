@@ -3,6 +3,7 @@ import { supabase } from './supabase'
 import { useParams } from "react-router-dom";
 import type { User } from '@supabase/supabase-js'
 
+
 function Writing({ user }: { user: User | null }) {
     const [loading, setLoading] = useState<boolean>(false);
     const [writings, setWriting] = useState<any[]>([]);
@@ -64,6 +65,7 @@ function Writing({ user }: { user: User | null }) {
 
     return (
         <div>
+            <h1>HELLO</h1>
             {showPopup && (
                 <div className="popup">
                     <div className="popup-content">
