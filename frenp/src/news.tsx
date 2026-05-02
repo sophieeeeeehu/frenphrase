@@ -253,7 +253,7 @@ function NewsContent() {
                         </div>
                     </div>
                 </div>
-                <div style={{ flex: 1, marginTop: '40px', overflowY: 'auto', scrollbarWidth: 'none', paddingRight: '20px', msOverflowStyle: 'none', paddingBottom: '50px' }}>
+                <div style={{ flex: 1, marginTop: '40px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingRight: '30px', paddingBottom: '50px' }}>
                     <Outlet />
                 </div>
             </div>

@@ -150,32 +150,37 @@ function NewsVocab({ user }: { user: User | null }) {
                         , justifyContent: 'end'
                     }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
-                            <button onClick={() => verifyWords(phrase, meaning)} disabled={verifying}>
-                                {verifying ? 'Verifying...' : 'Verify'}
-                            </button>
-                            {chat ?
-                                <button onClick={submit} disabled={loading}>
-                                    {loading ? 'Saving...' : 'Add'}
+                            {meaning ?
+                                <button onClick={() => verifyWords(phrase, meaning)} disabled={verifying}>
+                                    {verifying ? 'Verifying...' : 'Verify'}
                                 </button>
-                                : <></>}
+                                : <a href={`https://www.wordreference.com/fren/${phrase}`} target="_blank" rel="noopener noreferrer">
+                                    <button>Search</button>
+                                </a>}
 
                         </div>
                     </div>
                     {verifying ? <p>Loading response...</p> : <ReactMarkdown>{chat || ''}</ReactMarkdown>}
+                    {chat ?
+                        <button onClick={submit} disabled={loading}>
+                            {loading ? 'Saving...' : 'Add'}
+                        </button>
+                        : <></>}
                 </div>
-                : <></>}
+                : <></>
+            }
             <div className='phrases'>
                 {phraselist.map((p) => (
                     <Link to={`phrase/${p.id}`}>
                         <div className='phrase'>
-                            <h2>{p.phrase}</h2>
+                            <h2 style={{ fontSize: '24px' }}>{p.phrase}</h2>
                             <h3>{p.meaning}</h3>
                         </div>
                     </Link>
 
                 ))}
             </div>
-        </div>
+        </div >
     )
 }
 

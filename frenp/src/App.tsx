@@ -36,19 +36,6 @@ function App() {
         <Route path="/writing" element={<Writing user={user} />} />
         <Route path="/writing/:id" element={<Writecontent />} />
         <Route path="/news" element={<News user={user} />} />
-        {/* <Route element={<NewsContent />}>
-          <Route path="/news/:id" element={<NewsVocab user={user} />} />
-          <Route path="/news/:id/phrase/:id" element={<Sentence user={user} />} />
-        </Route> 
-        <Route path="/news" element={<News user={user} />}>
-          <Route path=":id" element={<NewsContent />}>
-
-            <Route index element={<NewsVocab user={user} />} />
-
-            <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
-
-          </Route>
-        </Route>*/}
         <Route path="/news/:id" element={<NewsContent />}>
           <Route index element={<NewsVocab user={user} />} />
           <Route path="phrase/:phraseId" element={<Sentence user={user} />} />

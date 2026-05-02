@@ -150,18 +150,22 @@ function Word({ user }: { user: User | null }) {
                         , justifyContent: 'end'
                     }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
-                            <button onClick={() => verifyWords(phrase, meaning)} disabled={verifying}>
-                                {verifying ? 'Verifying...' : 'Verify'}
-                            </button>
-                            {chat ?
-                                <button onClick={submit} disabled={loading}>
-                                    {loading ? 'Saving...' : 'Add'}
+                            {meaning ?
+                                <button onClick={() => verifyWords(phrase, meaning)} disabled={verifying}>
+                                    {verifying ? 'Verifying...' : 'Verify'}
                                 </button>
-                                : <></>}
+                                : <a href={`https://www.wordreference.com/fren/${phrase}`} target="_blank" rel="noopener noreferrer">
+                                    <button>Search</button>
+                                </a>}
 
                         </div>
                     </div>
                     {verifying ? <p>Loading response...</p> : <ReactMarkdown>{chat || ''}</ReactMarkdown>}
+                    {chat ?
+                        <button onClick={submit} disabled={loading}>
+                            {loading ? 'Saving...' : 'Add'}
+                        </button>
+                        : <></>}
                 </div>
                 : <></>}
             <div className='phrase-title'>

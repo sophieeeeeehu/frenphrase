@@ -188,7 +188,10 @@ function Sentence({ user }: { user: User | null }) {
                         : <a href={`/word/${phrases.unit_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></a>}
                 </div>
                 <div className='VocabTitle'>
-                    <h1>{phrases.phrase}</h1>
+                    <a href={`https://www.wordreference.com/fren/${phrases.phrase}`} target="_blank" rel="noopener noreferrer"
+                        style={{ color: '#B4552C' }}>
+                        <h1>{phrases.phrase}</h1>
+                    </a>
                     <h2>{phrases.meaning}</h2>
                 </div>
             </div>
