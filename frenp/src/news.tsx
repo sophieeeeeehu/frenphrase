@@ -161,9 +161,9 @@ function News({ user }: { user: User | null }) {
                     color: '#214e6a',
                     fontFamily: "Fraunces, serif",
                     fontSize: '2.7em',
-                }}>News list</h1>
+                }}>Article list</h1>
                 {user ? <button onClick={() => setShowPopup(true)}>
-                    Add News
+                    Add Article
                 </button>
                     : <h1></h1>}
             </div>
@@ -223,13 +223,13 @@ function NewsContent() {
 
     return (
         <div>
-            <div className='back-icon' style={{ marginTop: '20px' }}>
+            <div className='back-icon' style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <a href="/news" style={{ color: '#1e6b8f' }}>
                     <MdOutlineReply />
-                    <h3>back to news list</h3></a>
+                    <h3>back to article list</h3></a>
             </div>
-            <div style={{ display: "flex", gap: "20px" }}>
-                <div className='news-left' style={{ width: "700px" }}>
+            <div style={{ display: "flex", gap: "20px", height: '80vh', overflow: 'hidden' }}>
+                <div className='news-left' style={{ width: "700px", overflowY: 'auto', paddingRight: '20px', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '50px' }}>
                     <div className='phrases'>
 
                         <div>
@@ -253,7 +253,7 @@ function NewsContent() {
                         </div>
                     </div>
                 </div>
-                <div style={{ flex: 1, marginTop: '40px' }}>
+                <div style={{ flex: 1, marginTop: '40px', overflowY: 'auto', scrollbarWidth: 'none', paddingRight: '20px', msOverflowStyle: 'none', paddingBottom: '50px' }}>
                     <Outlet />
                 </div>
             </div>
