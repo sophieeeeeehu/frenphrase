@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Word from "./Word.tsx";
+// import Word from "./Word.tsx";
 import Banner from "./banner.tsx";
 import { useEffect, useState } from "react";
 import type { User } from '@supabase/supabase-js'
@@ -8,7 +8,8 @@ import Unit from "./Unit.tsx";
 import Sentence from "./Sentence.tsx";
 import { Writing, Writecontent } from "./writing.tsx";
 import { News, NewsContent } from "./news.tsx";
-import NewsVocab from "./newsvocab.tsx";
+import { NewsVocab, Word } from "./getvocab.tsx";
+import WordContent from "./wordcontent.tsx";
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -31,8 +32,10 @@ function App() {
     <Routes>
       <Route element={<Banner user={user} />}>
         <Route path="/" element={<Unit user={user} />} />
-        <Route path="/word/:id" element={<Word user={user} />} />
-        <Route path="/phrase/:phraseId" element={<Sentence user={user} />} />
+        <Route path="/word/:unitid" element={<WordContent />}>
+          <Route index element={<Word user={user} />} />
+          <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
+        </Route>
         <Route path="/writing" element={<Writing user={user} />} />
         <Route path="/writing/:id" element={<Writecontent />} />
         <Route path="/news" element={<News user={user} />} />

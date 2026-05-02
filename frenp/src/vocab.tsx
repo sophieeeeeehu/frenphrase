@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
 import type { User } from '@supabase/supabase-js'
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Mistral } from '@mistralai/mistralai';
 import ReactMarkdown from "react-markdown";
 
@@ -11,9 +11,14 @@ type Phrase = {
     meaning: string
 }
 
+type VocabProps = {
+    user: User | null;
+    unitId?: string;
+    newsId?: string;
+};
 
-function NewsVocab({ user }: { user: User | null }) {
-    const { id } = useParams<{ id: string }>();
+
+function Vocab({ user, unitId, newsId }: VocabProps) {
     const [reloadKey, setReloadKey] = useState(0);
     const [phraselist, setPhraselist] = useState<Phrase[]>([])
     const [phrase, setPhrase] = useState('')
@@ -30,23 +35,30 @@ function NewsVocab({ user }: { user: User | null }) {
     // ---------------- fetching words ------------------ //
     useEffect(() => {
         const fetchPhrases = async () => {
-            const { data, error } = await supabase
+            let query = supabase
                 .from('phrases')
                 .select('*')
-                .eq("news_id", id)
-                .order('created_at', { ascending: false })
+                .order('created_at', { ascending: false });
 
-            if (error) {
-                console.error(error)
-            } else {
-                setPhraselist(data ?? [])
+            if (newsId) {
+                query = query.eq("news_id", newsId);
             }
 
-            // setLoading(false)
-        }
+            else {
+                query = query.eq("unit_id", unitId);
+            }
 
-        fetchPhrases()
-    }, [reloadKey])
+            const { data, error } = await query;
+
+            if (error) {
+                console.error(error);
+            } else {
+                setPhraselist(data ?? []);
+            }
+        };
+
+        fetchPhrases();
+    }, [reloadKey, newsId]);
 
     // -------------------- Get Unit ---------------------------//
 
@@ -56,7 +68,7 @@ function NewsVocab({ user }: { user: User | null }) {
             const { data, error } = await supabase
                 .from('units')
                 .select('*')
-                .eq("id", 11) // HARD CODED because news vocab uses unit_id 11
+                .eq("id", unitId)
                 .single()
 
             if (error) {
@@ -72,28 +84,40 @@ function NewsVocab({ user }: { user: User | null }) {
 
 
     // --------------------- Add words ---------------------- //
+
     const submit = async () => {
-        if (!phrase.trim()) return
+        if (!phrase.trim()) return;
 
-        setLoading(true)
+        setLoading(true);
 
-        const { error } = await supabase
-            .from('phrases')
-            .insert({ phrase: phrase, meaning: meaning, unit_id: 11, news_id: id })
+        if (newsId) {
+            const { error } = await supabase
+                .from('phrases')
+                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, news_id: newsId });
 
-        setLoading(false)
-
-
-        if (error) {
-            alert(error.message)
+            setLoading(false);
+            if (error) {
+                alert(error.message);
+            }
         }
 
-        alert('Inserted!')
-        setMeaning('')
-        setPhrase('')
-        setChat('')
-        setReloadKey(prev => prev + 1)
-    }
+        else {
+            const { error } = await supabase
+                .from('phrases')
+                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId });
+
+            setLoading(false);
+            if (error) {
+                alert(error.message);
+            }
+        }
+
+        alert('Inserted!');
+        setMeaning('');
+        setPhrase('');
+        setChat('');
+        setReloadKey(prev => prev + 1);
+    };
 
     // ----------------------- Le Chat - Verify Words ------------------------- //
     const verifyWords = async (word: string, meaning: string) => {
@@ -184,4 +208,4 @@ function NewsVocab({ user }: { user: User | null }) {
     )
 }
 
-export default NewsVocab
+export default Vocab
