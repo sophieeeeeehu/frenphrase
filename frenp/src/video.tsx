@@ -5,6 +5,11 @@ import { useParams } from "react-router-dom";
 import type { User } from '@supabase/supabase-js'
 import { MdOutlineReply } from "react-icons/md";
 
+const getYoutubeID = (url: string) => {
+    const videoId = new URL(url).searchParams.get("v");
+    return videoId;
+};
+
 function Video({ user }: { user: User | null }) {
     // for adding news and displaying news list
     const [loading, setLoading] = useState<boolean>(false);
@@ -115,15 +120,10 @@ function Video({ user }: { user: User | null }) {
                 </button>
                     : <h1></h1>}
             </div>
-            <div className='phrases'>
+            <div style={{ width: '100%', gap: '30px', display: 'flex', justifyContent: 'center', alignContent: 'center', flexWrap: 'wrap' }}>
                 {videolist.map((p) => (
                     <a href={`/videos/${p.id}`}>
-                        <div key={p.id} className='phrase'>
-                            <div>
-                                <h2>{p.title}</h2>
-                                <h3>{p.source}, {p.created_at}</h3>
-                            </div>
-                        </div>
+                        <img src={`https://img.youtube.com/vi/${getYoutubeID(p.url)}/hqdefault.jpg`} style={{ width: "240px" }} />
                     </a>
 
                 ))}
@@ -138,15 +138,15 @@ function VideoContent() {
     // for displaying video content
     const [loading, setLoading] = useState<boolean>(false);
     const [content, setContent] = useState<any | null>(null);
-    const { id } = useParams<{ id: string }>();
+    const { videoid } = useParams<{ videoid: string }>();
 
 
     useEffect(() => {
-        const fetchNews = async () => {
+        const fetchVideos = async () => {
             const { data, error } = await supabase
-                .from('news')
+                .from('videos')
                 .select('*')
-                .eq('id', id)
+                .eq('id', videoid)
                 .single()
 
             if (error) {
@@ -158,11 +158,11 @@ function VideoContent() {
 
             setLoading(false)
         }
-        fetchNews()
+        fetchVideos()
     }, [])
 
     useEffect(() => {
-        console.log("Updated news:", content)
+        console.log("Updated videos:", content)
     }, [])
 
 
@@ -172,36 +172,27 @@ function VideoContent() {
     return (
         <div>
             <div className='back-icon' style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <a href="/news" style={{ color: '#1e6b8f' }}>
+                <a href="/videos" style={{ color: '#1e6b8f' }}>
                     <MdOutlineReply />
-                    <h3>back to article list</h3></a>
+                    <h3>back to video list</h3></a>
             </div>
             <div style={{ display: "flex", gap: "20px", height: '80vh', overflow: 'hidden' }}>
                 <div className='news-left' style={{ width: "700px", overflowY: 'auto', paddingRight: '20px', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '50px' }}>
-                    <div className='phrases'>
-
+                    <div style={{ marginBottom: '20px' }}>
                         <div>
-                            <a href={content.url} style={{ border: '0px', padding: '0px', margin: '0px' }} target='_blank' rel="noopener noreferrer">
-                                <h2 style={{
-                                    color: '#0a285d',
-                                    fontFamily: "Fraunces, serif",
-                                    textAlign: 'left',
-                                    fontWeight: '600',
-                                    fontSize: '1.8rem',
-                                    lineHeight: '1',
-                                }}>{content.title}</h2>
-                            </a>
-                            <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic', marginTop: '0px' }}>
-                                {content.source}, {content.created_at}</h4>
-                            <div className='phrase'>
-                                <div>
-                                    <h3 style={{ whiteSpace: 'pre-line', color: '#0a285d' }}>{content.article}</h3>
-                                </div>
-                            </div>
+                            <iframe
+                                width="700px"
+                                height="540px"
+                                src={`https://www.youtube.com/embed/${getYoutubeID(content.url)}`}
+                                title="YouTube video player"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
                         </div>
                     </div>
                 </div>
-                <div style={{ flex: 1, marginTop: '40px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingRight: '30px', paddingBottom: '50px' }}>
+                <div style={{ flex: 1, marginTop: '0px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingRight: '30px', paddingBottom: '50px' }}>
                     <Outlet />
                 </div>
             </div>

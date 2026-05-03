@@ -15,4 +15,10 @@ function Word({ user }: { user: User | null }) {
     return <Vocab user={user} unitId={unitid} />;
 }
 
-export { NewsVocab, Word };
+function VideoVocab({ user }: { user: User | null }) {
+    const { videoid } = useParams<{ videoid: string }>();
+
+    return <Vocab user={user} videoId={videoid} unitId="12" />;
+}
+
+export { NewsVocab, Word, VideoVocab };

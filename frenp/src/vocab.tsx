@@ -15,10 +15,11 @@ type VocabProps = {
     user: User | null;
     unitId?: string;
     newsId?: string;
+    videoId?: string;
 };
 
 
-function Vocab({ user, unitId, newsId }: VocabProps) {
+function Vocab({ user, unitId, newsId, videoId }: VocabProps) {
     const [reloadKey, setReloadKey] = useState(0);
     const [phraselist, setPhraselist] = useState<Phrase[]>([])
     const [phrase, setPhrase] = useState('')
@@ -44,6 +45,10 @@ function Vocab({ user, unitId, newsId }: VocabProps) {
                 query = query.eq("news_id", newsId);
             }
 
+            else if (videoId) {
+                query = query.eq("video_id", videoId);
+            }
+
             else {
                 query = query.eq("unit_id", unitId);
             }
@@ -58,7 +63,7 @@ function Vocab({ user, unitId, newsId }: VocabProps) {
         };
 
         fetchPhrases();
-    }, [reloadKey, newsId]);
+    }, [reloadKey, newsId, videoId]);
 
     // -------------------- Get Unit ---------------------------//
 
@@ -94,6 +99,17 @@ function Vocab({ user, unitId, newsId }: VocabProps) {
             const { error } = await supabase
                 .from('phrases')
                 .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, news_id: newsId });
+
+            setLoading(false);
+            if (error) {
+                alert(error.message);
+            }
+        }
+
+        else if (videoId) {
+            const { error } = await supabase
+                .from('phrases')
+                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, video_id: videoId });
 
             setLoading(false);
             if (error) {

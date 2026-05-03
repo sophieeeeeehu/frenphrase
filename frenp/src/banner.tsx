@@ -115,7 +115,9 @@ export function Banner({ user }: { user: User | null }) {
                 </div>
             </header >
             <main
-                className={`content ${location.pathname.includes("news/") ? "content-wide" : ""
+                className={`content ${location.pathname.includes("news/") || location.pathname.includes("videos/")
+                        ? "content-wide"
+                        : ""
                     }`}
             >
                 <Outlet />

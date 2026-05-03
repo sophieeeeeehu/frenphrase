@@ -8,9 +8,9 @@ import Unit from "./Unit.tsx";
 import Sentence from "./Sentence.tsx";
 import { Writing, Writecontent } from "./writing.tsx";
 import { News, NewsContent } from "./news.tsx";
-import { NewsVocab, Word } from "./getvocab.tsx";
+import { NewsVocab, Word, VideoVocab } from "./getvocab.tsx";
 import WordContent from "./wordcontent.tsx";
-import { Video } from "./video.tsx";
+import { Video, VideoContent } from "./video.tsx";
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -45,6 +45,10 @@ function App() {
           <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
         </Route>
         <Route path="/videos" element={<Video user={user} />} />
+        <Route path="/videos/:videoid" element={<VideoContent />}>
+          <Route index element={<VideoVocab user={user} />} />
+          <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
+        </Route>
       </Route>
     </Routes>
   );

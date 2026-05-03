@@ -19,6 +19,7 @@ type Phrase = {
     meaning: string
     unit_id: number
     news_id: number
+    video_id: number
 }
 
 function Sentence({ user }: { user: User | null }) {
@@ -107,7 +108,7 @@ function Sentence({ user }: { user: User | null }) {
         const fetchPhrases = async () => {
             const { data, error } = await supabase
                 .from('phrases')
-                .select('id, phrase, meaning, unit_id, news_id')
+                .select('id, phrase, meaning, unit_id, news_id, video_id')
                 .eq("id", phraseId)
                 .order('created_at', { ascending: false })
                 .single()
@@ -185,7 +186,10 @@ function Sentence({ user }: { user: User | null }) {
             <div>
                 <div className='back-icon' style={{ marginTop: '20px', display: 'flex' }}>
                     {phrases.unit_id == 11 ? <Link to={`/news/${phrases.news_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></Link>
-                        : <a href={`/word/${phrases.unit_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></a>}
+                        : phrases.unit_id == 12 ?
+                            <Link to={`/videos/${phrases.video_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></Link>
+                            : <a href={`/word/${phrases.unit_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></a>
+                    }
                 </div>
                 <div className='VocabTitle'>
                     <a href={`https://www.wordreference.com/fren/${phrases.phrase}`} target="_blank" rel="noopener noreferrer"
