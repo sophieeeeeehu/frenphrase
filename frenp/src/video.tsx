@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import type { User } from '@supabase/supabase-js'
 import { MdOutlineReply } from "react-icons/md";
+import YouTube from "react-youtube";
 
 const getYoutubeID = (url: string) => {
     const videoId = new URL(url).searchParams.get("v");
@@ -139,6 +140,15 @@ function VideoContent() {
     const [loading, setLoading] = useState<boolean>(false);
     const [content, setContent] = useState<any | null>(null);
     const { videoid } = useParams<{ videoid: string }>();
+    const [currentTime, setCurrentTime] = useState<number>(0);
+    const [player, setPlayer] = useState<any>(null);
+
+    const getCurrentTime = () => {
+        if (player) {
+            return player.getCurrentTime();
+        }
+        return 0;
+    };
 
 
     useEffect(() => {
@@ -165,6 +175,13 @@ function VideoContent() {
         console.log("Updated videos:", content)
     }, [])
 
+    useEffect(() => {
+        if (player) {
+            player.seekTo(currentTime, true);
+        }
+    }, [currentTime]);
+
+
 
     if (loading) return <p>Loading topics...</p>;
     if (!content) return <p></p>;
@@ -180,20 +197,27 @@ function VideoContent() {
                 <div className='news-left' style={{ width: "700px", overflowY: 'auto', paddingRight: '20px', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '50px' }}>
                     <div style={{ marginBottom: '20px' }}>
                         <div>
-                            <iframe
+                            {/* <iframe
                                 width="700px"
+                                key={currentTime}
                                 height="540px"
-                                src={`https://www.youtube.com/embed/${getYoutubeID(content.url)}`}
+                                // src={`https://www.youtube.com/embed/${getYoutubeID(content.url)}`}
+                                src={`https://www.youtube.com/embed/${getYoutubeID(content.url)}?start=${currentTime}&autoplay=1`}
                                 title="YouTube video player"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
+                            /> */}
+                            <YouTube
+                                videoId={getYoutubeID(content.url) || ""}
+                                opts={{ width: "700", height: "540" }}
+                                onReady={(e) => setPlayer(e.target)}
                             />
                         </div>
                     </div>
                 </div>
                 <div style={{ flex: 1, marginTop: '0px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingRight: '30px', paddingBottom: '50px' }}>
-                    <Outlet />
+                    <Outlet context={{ setCurrentTime, getCurrentTime }} />
                 </div>
             </div>
         </div>

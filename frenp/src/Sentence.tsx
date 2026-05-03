@@ -4,6 +4,7 @@ import { supabase } from './supabase'
 // import { Mistral } from '@mistralai/mistralai';
 import type { User } from '@supabase/supabase-js'
 import ReactMarkdown from "react-markdown";
+import { useLocation } from "react-router-dom";
 import { useParams, Link } from "react-router-dom";
 import { MdArrowBack } from "react-icons/md";
 import {
@@ -23,6 +24,7 @@ type Phrase = {
 }
 
 function Sentence({ user }: { user: User | null }) {
+    const location = useLocation();
     const { phraseId } = useParams<{ phraseId: string }>();
     const [chat, setChat] = useState('')
     const [longchat, setLongchat] = useState('')
@@ -186,7 +188,7 @@ function Sentence({ user }: { user: User | null }) {
             <div>
                 <div className='back-icon' style={{ marginTop: '20px', display: 'flex' }}>
                     {phrases.unit_id == 11 ? <Link to={`/news/${phrases.news_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></Link>
-                        : phrases.unit_id == 12 ?
+                        : (phrases.unit_id == 12 && location.pathname.includes("/videos")) ?
                             <Link to={`/videos/${phrases.video_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></Link>
                             : <a href={`/word/${phrases.unit_id}`} style={{ color: '#8a4c20' }}><MdArrowBack /></a>
                     }

@@ -1,6 +1,6 @@
 import Vocab from "./vocab";
-import { useParams } from "react-router-dom";
 import type { User } from '@supabase/supabase-js'
+import { useOutletContext, useParams } from "react-router-dom";
 
 
 function NewsVocab({ user }: { user: User | null }) {
@@ -15,10 +15,24 @@ function Word({ user }: { user: User | null }) {
     return <Vocab user={user} unitId={unitid} />;
 }
 
+// function VideoVocab({ user }: { user: User | null }) {
+//     const { videoid } = useParams<{ videoid: string }>();
+
+//     return <Vocab user={user} videoId={videoid} unitId="12" />;
+// }
 function VideoVocab({ user }: { user: User | null }) {
     const { videoid } = useParams<{ videoid: string }>();
+    const { setCurrentTime, getCurrentTime } = useOutletContext<any>();
 
-    return <Vocab user={user} videoId={videoid} unitId="12" />;
+    return (
+        <Vocab
+            user={user}
+            videoId={videoid}
+            unitId="12"
+            setCurrentTime={setCurrentTime}
+            getCurrentTime={getCurrentTime}   // 👈 pass it down
+        />
+    );
 }
 
 export { NewsVocab, Word, VideoVocab };

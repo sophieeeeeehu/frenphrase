@@ -9,6 +9,7 @@ type Phrase = {
     id: number
     phrase: string
     meaning: string
+    video_timestamp: number
 }
 
 type VocabProps = {
@@ -16,10 +17,12 @@ type VocabProps = {
     unitId?: string;
     newsId?: string;
     videoId?: string;
+    setCurrentTime?: (time: number) => void;
+    getCurrentTime?: () => number;
 };
 
 
-function Vocab({ user, unitId, newsId, videoId }: VocabProps) {
+function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }: VocabProps) {
     const [reloadKey, setReloadKey] = useState(0);
     const [phraselist, setPhraselist] = useState<Phrase[]>([])
     const [phrase, setPhrase] = useState('')
@@ -93,6 +96,8 @@ function Vocab({ user, unitId, newsId, videoId }: VocabProps) {
     const submit = async () => {
         if (!phrase.trim()) return;
 
+        const timestamp = getCurrentTime?.() ?? 0;
+
         setLoading(true);
 
         if (newsId) {
@@ -109,7 +114,7 @@ function Vocab({ user, unitId, newsId, videoId }: VocabProps) {
         else if (videoId) {
             const { error } = await supabase
                 .from('phrases')
-                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, video_id: videoId });
+                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, video_id: videoId, video_timestamp: Math.floor(timestamp) });
 
             setLoading(false);
             if (error) {
@@ -211,7 +216,14 @@ function Vocab({ user, unitId, newsId, videoId }: VocabProps) {
             }
             <div className='phrases'>
                 {phraselist.map((p) => (
-                    <Link to={`phrase/${p.id}`}>
+                    <Link to={`phrase/${p.id}`}
+                        onClick={() => {
+                            setCurrentTime?.(-1);
+                            setTimeout(() => setCurrentTime?.(p.video_timestamp), 0);
+                        }}
+
+
+                    >
                         <div className='phrase'>
                             <h2 style={{ fontSize: '24px' }}>{p.phrase}</h2>
                             <h3>{p.meaning}</h3>
