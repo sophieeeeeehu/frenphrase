@@ -190,7 +190,7 @@ function NewsContent() {
     // for displaying news content
     const [loading, setLoading] = useState<boolean>(false);
     const [content, setContent] = useState<any | null>(null);
-    const { id } = useParams<{ id: string }>();
+    const { newsid } = useParams<{ newsid: string }>();
 
 
     useEffect(() => {
@@ -198,7 +198,7 @@ function NewsContent() {
             const { data, error } = await supabase
                 .from('news')
                 .select('*')
-                .eq('id', id)
+                .eq('id', newsid)
                 .single()
 
             if (error) {

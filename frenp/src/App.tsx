@@ -10,6 +10,7 @@ import { Writing, Writecontent } from "./writing.tsx";
 import { News, NewsContent } from "./news.tsx";
 import { NewsVocab, Word } from "./getvocab.tsx";
 import WordContent from "./wordcontent.tsx";
+import { Video } from "./video.tsx";
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -39,10 +40,11 @@ function App() {
         <Route path="/writing" element={<Writing user={user} />} />
         <Route path="/writing/:id" element={<Writecontent />} />
         <Route path="/news" element={<News user={user} />} />
-        <Route path="/news/:id" element={<NewsContent />}>
+        <Route path="/news/:newsid" element={<NewsContent />}>
           <Route index element={<NewsVocab user={user} />} />
           <Route path="phrase/:phraseId" element={<Sentence user={user} />} />
         </Route>
+        <Route path="/videos" element={<Video user={user} />} />
       </Route>
     </Routes>
   );

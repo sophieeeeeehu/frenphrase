@@ -42,6 +42,7 @@ export function Banner({ user }: { user: User | null }) {
                             <>
                                 <a className="nav-bar" href="/writing">Writing</a>
                                 <a className="nav-bar" href="/news">News</a>
+                                <a className="nav-bar" href="/videos">Vidéos</a>
                             </>
                         ) : <>
                             <a className="nav-bar" href="/news">News</a>

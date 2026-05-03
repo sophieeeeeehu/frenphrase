@@ -4,9 +4,9 @@ import type { User } from '@supabase/supabase-js'
 
 
 function NewsVocab({ user }: { user: User | null }) {
-    const { newsId } = useParams<{ newsId: string }>();
+    const { newsid } = useParams<{ newsid: string }>();
 
-    return <Vocab user={user} newsId={newsId} unitId="11" />;
+    return <Vocab user={user} newsId={newsid} unitId="11" />;
 }
 
 function Word({ user }: { user: User | null }) {
