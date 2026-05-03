@@ -114,7 +114,7 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
         else if (videoId) {
             const { error } = await supabase
                 .from('phrases')
-                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, video_id: videoId, video_timestamp: Math.floor(timestamp - 1) });
+                .insert({ phrase: phrase, meaning: meaning, unit_id: unitId, video_id: videoId, video_timestamp: Math.floor(timestamp - 2) });
 
             setLoading(false);
             if (error) {
