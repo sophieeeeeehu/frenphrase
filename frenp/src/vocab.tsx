@@ -298,7 +298,7 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
             e.preventDefault();
             e.stopPropagation();
             startRecording();
-        }}>Recordee<MdOutlineReply /></button>
+        }}>Recordeerr<MdOutlineReply /></button>
       )}
       <audio controls src={'https://akoedlhhcxktwwpyetrl.supabase.co/storage/v1/object/public/fren_recordings/1781085426378.mp3'}></audio>
                 {phraselist.map((p) => (
