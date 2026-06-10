@@ -221,9 +221,9 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
     else console.log("Browser: Not Safari");
   // ----------------------- For uploading audio ------------------------- //
   const uploadAudio = async (audioBlob: Blob) => {
-  const fileName = `trywebm`;
   if (ua.includes("Safari") && !ua.includes("Chrome"))
   {
+    const fileName = `tryvary.mp3`;
   const { error } = await supabase.storage
     .from("fren_recordings")
     .upload(fileName, audioBlob, {contentType: 'audio/mp3', upsert: true});
@@ -231,16 +231,26 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
     console.error(error);
     return;
   }
+    const { data } = supabase.storage
+    .from("fren_recordings")
+    .getPublicUrl(fileName);
+
+  const audioUrl = data.publicUrl;
+
+  await supabase.from("recordings").insert({
+    title: "My Recording",
+    audio_url: audioUrl,
+  });
 }
 else {
+     const fileName = `tryvary.webm`;
       const { error } = await supabase.storage
     .from("fren_recordings")
     .upload(fileName, audioBlob, {contentType: 'audio/webm', upsert: true});
   if (error) {
     console.error(error);
     return;
-}}
-
+    }
   const { data } = supabase.storage
     .from("fren_recordings")
     .getPublicUrl(fileName);
@@ -251,6 +261,9 @@ else {
     title: "My Recording",
     audio_url: audioUrl,
   });
+}
+
+
 ;
   }
 
