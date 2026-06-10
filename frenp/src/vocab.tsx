@@ -222,13 +222,11 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
   // ----------------------- For uploading audio ------------------------- //
   const uploadAudio = async (audioBlob: Blob) => {
   const fileName = `trywebm`;
-
   if (ua.includes("Safari") && !ua.includes("Chrome"))
   {
   const { error } = await supabase.storage
     .from("fren_recordings")
     .upload(fileName, audioBlob, {contentType: 'audio/mp3', upsert: true});
-    console.log('upload as mp3 for safari')
   if (error) {
     console.error(error);
     return;
@@ -238,7 +236,6 @@ else {
       const { error } = await supabase.storage
     .from("fren_recordings")
     .upload(fileName, audioBlob, {contentType: 'audio/webm', upsert: true});
-    console.log('upload as webm for chrome')
   if (error) {
     console.error(error);
     return;
@@ -312,7 +309,7 @@ else {
             e.preventDefault();
             e.stopPropagation();
             startRecording();
-        }}>Recordeerr<MdOutlineReply /></button>
+        }}>Recorderrrr<MdOutlineReply /></button>
       )}
       <audio controls src={'https://akoedlhhcxktwwpyetrl.supabase.co/storage/v1/object/public/fren_recordings/1781085426378.mp3'}></audio>
                 {phraselist.map((p) => (
