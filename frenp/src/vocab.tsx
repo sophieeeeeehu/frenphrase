@@ -219,7 +219,7 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
 
   // ----------------------- For uploading audio ------------------------- //
   const uploadAudio = async (audioBlob: Blob) => {
-  const fileName = `Trymp4.mp3`;
+  const fileName = `Trymp3.mp3`;
 
   const { error } = await supabase.storage
     .from("fren_recordings")
