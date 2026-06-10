@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 import type { User } from '@supabase/supabase-js'
 import { Link } from "react-router-dom";
 import { Mistral } from '@mistralai/mistralai';
+import { MdOutlineReply } from "react-icons/md";
 import ReactMarkdown from "react-markdown";
 
 type Phrase = {
@@ -169,7 +170,78 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
             setChat('An error occurred while fetching the response.');
         }
         setVerifying(false);
+    
     };
+
+    // ----------------------- For recording audio ------------------------- //
+ const [recording, setRecording] = useState(false);
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
+  const startRecording = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
+    
+    const recorder = new MediaRecorder(stream);
+
+
+    recorder.ondataavailable = (event) => {
+      chunksRef.current.push(event.data);
+    };
+
+    recorder.start();
+
+    mediaRecorderRef.current = recorder;
+    setRecording(true);
+  };
+
+  const stopRecording = async () => {
+    const recorder = mediaRecorderRef.current;
+
+    if (!recorder) return;
+
+    recorder.stop();
+
+    recorder.onstop = async () => {
+      const audioBlob = new Blob(chunksRef.current, {
+        type: "audio/webm",
+      });
+
+      chunksRef.current = [];
+
+      await uploadAudio(audioBlob);
+    };
+
+    setRecording(false);
+  };
+
+  // ----------------------- For uploading audio ------------------------- //
+  const uploadAudio = async (audioBlob: Blob) => {
+  const fileName = `Trymp4.mp3`;
+
+  const { error } = await supabase.storage
+    .from("fren_recordings")
+    .upload(fileName, audioBlob, {contentType: 'audio/mp3', upsert: true});
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const { data } = supabase.storage
+    .from("fren_recordings")
+    .getPublicUrl(fileName);
+
+  const audioUrl = data.publicUrl;
+
+  await supabase.from("recordings").insert({
+    title: "My Recording",
+    audio_url: audioUrl,
+  });
+};
+
 
     // ----------------------- For loading ------------------------- //
 
@@ -215,6 +287,20 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
                 : <></>
             }
             <div className='phrases'>
+                {recording ? (
+        <button onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            stopRecording();
+        }}>Stop<MdOutlineReply /></button>
+      ) : (
+        <button onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            startRecording();
+        }}>Recordee<MdOutlineReply /></button>
+      )}
+      <audio controls src={'https://akoedlhhcxktwwpyetrl.supabase.co/storage/v1/object/public/fren_recordings/1781085426378.mp3'}></audio>
                 {phraselist.map((p) => (
                     <Link to={`phrase/${p.id}`}
                         onClick={() => {
@@ -225,7 +311,9 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
 
                     >
                         <div className='phrase'>
-                            <h2 style={{ fontSize: '24px' }}>{p.phrase}</h2>
+                            <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                                <h2 style={{ fontSize: '24px' }}>{p.phrase}</h2>
+                            </div>
                             <h3>{p.meaning}</h3>
                         </div>
                     </Link>
@@ -237,3 +325,4 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
 }
 
 export default Vocab
+

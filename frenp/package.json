@@ -12,6 +12,7 @@
   "dependencies": {
     "@mistralai/mistralai": "^1.14.0",
     "@supabase/supabase-js": "^2.93.3",
+    "mic-recorder-to-mp3": "^2.2.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
