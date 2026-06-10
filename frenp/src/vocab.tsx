@@ -101,29 +101,25 @@ function Vocab({
     setLoading(true);
 
     if (newsId) {
-      const { error } = await supabase
-        .from("phrases")
-        .insert({
-          phrase: phrase,
-          meaning: meaning,
-          unit_id: unitId,
-          news_id: newsId,
-        });
+      const { error } = await supabase.from("phrases").insert({
+        phrase: phrase,
+        meaning: meaning,
+        unit_id: unitId,
+        news_id: newsId,
+      });
 
       setLoading(false);
       if (error) {
         alert(error.message);
       }
     } else if (videoId) {
-      const { error } = await supabase
-        .from("phrases")
-        .insert({
-          phrase: phrase,
-          meaning: meaning,
-          unit_id: unitId,
-          video_id: videoId,
-          video_timestamp: Math.floor(timestamp) - 2,
-        });
+      const { error } = await supabase.from("phrases").insert({
+        phrase: phrase,
+        meaning: meaning,
+        unit_id: unitId,
+        video_id: videoId,
+        video_timestamp: Math.floor(timestamp) - 2,
+      });
 
       setLoading(false);
       if (error) {
@@ -181,12 +177,16 @@ function Vocab({
   };
 
   // ----------------------- For recording audio ------------------------- //
-  const [recording, setRecording] = useState(false);
+//   const [recording, setRecording] = useState(false);
+  const [recordingPhraseId, setRecordingPhraseId] = useState<number | null>(
+    null,
+  );
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-
-  const startRecording = async () => {
+  // ----------------------- start recording ------------------------- //
+  const startRecording = async (vocab_id: number) => {
+    setRecordingPhraseId(vocab_id);
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -200,10 +200,10 @@ function Vocab({
     recorder.start();
 
     mediaRecorderRef.current = recorder;
-    setRecording(true);
+    // setRecording(true);
   };
-
-  const stopRecording = async (title: string) => {
+  // ----------stop recording and upload audio------------------ //
+  const stopRecording = async (title: string, vocab_id: number) => {
     const recorder = mediaRecorderRef.current;
 
     if (!recorder) return;
@@ -217,17 +217,22 @@ function Vocab({
 
       chunksRef.current = [];
 
-      await uploadAudio(audioBlob, title);
+      await uploadAudio(audioBlob, title, vocab_id);
     };
 
-    setRecording(false);
+    // setRecording(false);
+    setRecordingPhraseId(null);
   };
   const ua = navigator.userAgent;
   if (ua.includes("Safari") && !ua.includes("Chrome"))
     console.log("Browser: Safari");
   else console.log("Browser: Not Safari");
   // ----------------------- For uploading audio ------------------------- //
-  const uploadAudio = async (audioBlob: Blob, title: string) => {
+  const uploadAudio = async (
+    audioBlob: Blob,
+    title: string,
+    vocab_id: number,
+  ) => {
     if (ua.includes("Safari") && !ua.includes("Chrome")) {
       const fileName = `${title}.mp3`;
       const { error } = await supabase.storage
@@ -246,10 +251,15 @@ function Vocab({
 
       const audioUrl = data.publicUrl;
 
-      await supabase.from("recordings").insert({
-        vocab_id: 12,
-        record_url: audioUrl,
-      });
+      await supabase.from("recordings").upsert(
+        {
+          vocab_id: vocab_id,
+          record_url: audioUrl,
+        },
+        {
+          onConflict: "vocab_id",
+        },
+      );
     } else {
       const fileName = `${title}.webm`;
       const { error } = await supabase.storage
@@ -268,10 +278,13 @@ function Vocab({
 
       const audioUrl = data.publicUrl;
 
-      await supabase.from("recordings").insert({
-        vocab_id: 12,
-        record_url: audioUrl,
-      });
+      await supabase.from("recordings").upsert(
+        {
+          vocab_id: vocab_id,
+          record_url: audioUrl,
+        },
+        { onConflict: "vocab_id" },
+      );
     }
   };
 
@@ -336,29 +349,6 @@ function Vocab({
         <></>
       )}
       <div className="phrases">
-        {recording ? (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              stopRecording("My Recording");
-            }}
-          >
-            Stop
-            <MdOutlineReply />
-          </button>
-        ) : (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              startRecording();
-            }}
-          >
-            Recorderrrr
-            <MdOutlineReply />
-          </button>
-        )}
         <audio
           controls
           src={
@@ -378,6 +368,29 @@ function Vocab({
                 style={{ display: "flex", alignItems: "center", gap: "10px" }}
               >
                 <h2 style={{ fontSize: "24px" }}>{p.phrase}</h2>
+                {recordingPhraseId === p.id ? (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      stopRecording(`phraseid_${p.id}`, p.id);
+                    }}
+                  >
+                    Stop
+                    <MdOutlineReply />
+                  </button>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      startRecording(p.id);
+                    }}
+                  >
+                    Record
+                    <MdOutlineReply />
+                  </button>
+                )}
               </div>
               <h3>{p.meaning}</h3>
             </div>
