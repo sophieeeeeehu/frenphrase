@@ -216,19 +216,30 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
 
     setRecording(false);
   };
-
+    const ua = navigator.userAgent;
+    if (ua.includes("Safari") && !ua.includes("Chrome")) console.log("Browser: Safari");
+    else console.log("Browser: Not Safari");
   // ----------------------- For uploading audio ------------------------- //
   const uploadAudio = async (audioBlob: Blob) => {
   const fileName = `trywebm`;
-
+  if (ua.includes("Safari") && !ua.includes("Chrome"))
+  {
   const { error } = await supabase.storage
     .from("fren_recordings")
-    .upload(fileName, audioBlob, {contentType: 'audio/webm', upsert: true});
-
+    .upload(fileName, audioBlob, {contentType: 'audio/mp3', upsert: true});
   if (error) {
     console.error(error);
     return;
   }
+}
+else {
+      const { error } = await supabase.storage
+    .from("fren_recordings")
+    .upload(fileName, audioBlob, {contentType: 'audio/webm', upsert: true});
+  if (error) {
+    console.error(error);
+    return;
+}
 
   const { data } = supabase.storage
     .from("fren_recordings")
@@ -241,7 +252,7 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
     audio_url: audioUrl,
   });
 };
-
+  }
 
     // ----------------------- For loading ------------------------- //
 
@@ -324,5 +335,5 @@ function Vocab({ user, unitId, newsId, videoId, setCurrentTime, getCurrentTime }
     )
 }
 
-export default Vocab
+export default Vocab;
 
