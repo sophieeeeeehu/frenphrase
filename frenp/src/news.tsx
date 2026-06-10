@@ -14,6 +14,9 @@ function News({ user }: { user: User | null }) {
     const [url, setUrl] = useState("")
     const [source, setSource] = useState("")
     const [article, setArticle] = useState("")
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    // const [imageUrl, setImageUrl] = useState("")
+
     // const [correction, setCorrection] = useState("")
     // const [keypoint, setKeypoint] = useState("")
 
@@ -37,27 +40,110 @@ function News({ user }: { user: User | null }) {
     }, [])
 
     const submit = async () => {
-        if (!title.trim()) return
+  if (!title.trim()) return;
+  setLoading(true);
 
-        setLoading(true)
+  let uploadedImageUrl = null;
 
-        const { error } = await supabase
-            .from('news')
-            .insert({ title: title, source: source, article: article, url: url })
+  if (imageFile) {
+    const fileName = `${title}.png`;
 
-        setLoading(false)
+    const { error: uploadError } = await supabase.storage
+      .from("fren_article_images")
+      .upload(fileName, imageFile, {
+        contentType: imageFile.type,
+        upsert: true,
+      });
 
-
-        if (error) {
-            alert(error.message)
-        }
-
-        setTitle('')
-        setSource('')
-        setArticle('')
-        alert('Inserted!')
-
+    if (uploadError) {
+      console.error(uploadError);
+      setLoading(false);
+      return;
     }
+
+    const { data } = supabase.storage
+      .from("fren_article_images")
+      .getPublicUrl(fileName);
+
+    uploadedImageUrl = data.publicUrl;
+  }
+
+  const { error } = await supabase.from("news").insert({
+    title,
+    source,
+    article,
+    url,
+    article_image_url: uploadedImageUrl,
+  });
+
+  setLoading(false);
+
+  if (error) {
+    alert(error.message);
+  }
+
+  setTitle("");
+  setSource("");
+  setArticle("");
+  setImageFile(null);
+  alert("Inserted!");
+};
+
+//     const submit = async () => {
+//         if (!title.trim()) return
+//         setLoading(true)
+
+//         if (imageFile) {
+//             const fileName = `${title}.png`;
+//             const { error: uploadError } = await supabase.storage
+//                 .from("fren_article_images")
+//                 .upload(fileName, imageFile, {
+//                     contentType: imageFile.type,
+//                     upsert: true,
+//                 });
+//             if (uploadError) {
+//                 console.error(uploadError);
+//                 setLoading(false);
+//                 return;
+//             }
+//             const { data } = supabase.storage
+//                 .from("fren_article_images")
+//                 .getPublicUrl(fileName);
+            
+//             setImageUrl(data.publicUrl)
+            
+//             const { error } = await supabase
+//             .from('news')
+//             .insert({ title: title, source: source, article: article, url: url, article_image_url: imageUrl })
+
+//         setLoading(false)
+
+
+//         if (error) {
+//             alert(error.message)
+//         }
+//         ;}
+//         else {
+// const { error } = await supabase
+//             .from('news')
+//             .insert({ title: title, source: source, article: article, url: url })
+
+//         setLoading(false)
+
+
+//         if (error) {
+//             alert(error.message)
+//         }
+//         }
+
+
+//         setTitle('')
+//         setSource('')
+//         setArticle('')
+//         setImageFile(null)
+//         alert('Inserted!')
+
+//     }
 
     useEffect(() => {
         console.log("Updated news:", newslist)
@@ -136,6 +222,24 @@ function News({ user }: { user: User | null }) {
                             onChange={e => setArticle(e.target.value)}
                             placeholder="Enter sentence/context here"
                         />
+                        <p>Image:</p>
+                        <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                            setImageFile(e.target.files[0]);
+                            }
+                        }}
+                        />
+                        {imageFile && (
+                            <img
+                                src={URL.createObjectURL(imageFile)}
+                                alt="preview"
+                                style={{ width: "150px", marginTop: "10px" }}
+                            />
+)}
+                        
                         <div style={{
                             display: 'flex',
                             justifyContent: 'end',
@@ -144,7 +248,7 @@ function News({ user }: { user: User | null }) {
                             <button onClick={() => { submit(); setShowPopup(false) }}>
                                 Add
                             </button>
-                            <button onClick={() => setShowPopup(false)}>
+                            <button onClick={() => { setShowPopup(false); setImageFile(null); }}>
                                 Close
                             </button>
                         </div>
@@ -246,6 +350,10 @@ function NewsContent() {
                             <h4 style={{ fontFamily: "Poppins, sans-serif", fontWeight: '400', whiteSpace: 'pre-line', color: '#1e6b8f', fontStyle: 'italic', marginTop: '0px' }}>
                                 {content.source}, {content.created_at}</h4>
                             <div className='phrase'>
+                                {content.article_image_url ? 
+                                (<img src={`${content.article_image_url}`} alt="news" style={{ width: '100%', borderRadius: '5px', marginBottom: '20px' }} />) 
+                                : <></>
+                            }
                                 <div>
                                     <h3 style={{ whiteSpace: 'pre-line', color: '#0a285d' }}>{content.article}</h3>
                                 </div>
