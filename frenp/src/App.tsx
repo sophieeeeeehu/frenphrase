@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 // import Word from "./Word.tsx";
 import Banner from "./banner.tsx";
 import { useEffect, useState } from "react";
-import type { User } from '@supabase/supabase-js'
-import { supabase } from './supabase'
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "./supabase";
 import Unit from "./Unit.tsx";
 import Sentence from "./Sentence.tsx";
 import { Writing, Writecontent } from "./writing.tsx";
@@ -13,21 +13,21 @@ import WordContent from "./wordcontent.tsx";
 import { Video, VideoContent } from "./video.tsx";
 
 function App() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user)
-    })
+      setUser(data.user);
+    });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null)
-      }
-    )
+        setUser(session?.user ?? null);
+      },
+    );
 
-    return () => listener.subscription.unsubscribe()
-  }, [])
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   return (
     <Routes>
@@ -54,5 +54,4 @@ function App() {
   );
 }
 
-
-export default App
+export default App;

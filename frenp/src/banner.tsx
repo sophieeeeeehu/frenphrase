@@ -41,11 +41,11 @@ export function Banner({ user }: { user: User | null }) {
                         {user ? (
                             <>
                                 <a className="nav-bar" href="/writing">Writing</a>
-                                <a className="nav-bar" href="/news">News</a>
+                                <a className="nav-bar" href="/news">Articles</a>
                                 <a className="nav-bar" href="/videos">Vidéos</a>
                             </>
                         ) : <>
-                            <a className="nav-bar" href="/news">News</a>
+                            <a className="nav-bar" href="/news">Articles</a>
                         </>}
                         <div className='login-laptop'>
                             {user ? (

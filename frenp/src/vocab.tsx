@@ -3,7 +3,7 @@ import { supabase } from "./supabase";
 import type { User } from "@supabase/supabase-js";
 import { Link } from "react-router-dom";
 import { Mistral } from "@mistralai/mistralai";
-import { MdOutlineReply } from "react-icons/md";
+import { HiSpeakerWave } from "react-icons/hi2";
 import ReactMarkdown from "react-markdown";
 
 type Phrase = {
@@ -11,6 +11,7 @@ type Phrase = {
   phrase: string;
   meaning: string;
   video_timestamp: number;
+  record_url: string;
 };
 
 type VocabProps = {
@@ -38,15 +39,129 @@ function Vocab({
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [chat, setChat] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
   const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
   const client = new Mistral({ apiKey: apiKey });
+// ----------------------- For recording audio ------------------------- //
+
+  const [recordingPhraseId, setRecordingPhraseId] = useState<number | null>(
+    null,
+  );
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  // ----------------------- start recording ------------------------- //
+  const startRecording = async (vocab_id: number) => {
+    setRecordingPhraseId(vocab_id);
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
+
+    const recorder = new MediaRecorder(stream);
+
+    recorder.ondataavailable = (event) => {
+      chunksRef.current.push(event.data);
+    };
+
+    recorder.start();
+
+    mediaRecorderRef.current = recorder;
+    // setRecording(true);
+  };
+  // ----------stop recording and upload audio------------------ //
+  const stopRecording = async (title: string, vocab_id: number) => {
+    const recorder = mediaRecorderRef.current;
+
+    if (!recorder) return;
+
+    recorder.stop();
+
+    recorder.onstop = async () => {
+      const audioBlob = new Blob(chunksRef.current, {
+        type: "audio/webm",
+      });
+
+      chunksRef.current = [];
+
+      await uploadAudio(audioBlob, title, vocab_id);
+    };
+
+    // setRecording(false);
+    setRecordingPhraseId(null);
+  };
+  const ua = navigator.userAgent;
+  if (ua.includes("Safari") && !ua.includes("Chrome"))
+    console.log("Browser: Safari");
+  else console.log("Browser: Not Safari");
+
+  // ----------------------- For uploading audio ------------------------- //
+  const uploadAudio = async (
+    audioBlob: Blob,
+    title: string,
+    vocab_id: number,
+  ) => {
+    if (ua.includes("Safari") && !ua.includes("Chrome")) {
+      const fileName = `${title}.mp3`;
+      const { error } = await supabase.storage
+        .from("fren_recordings")
+        .upload(fileName, audioBlob, {
+          contentType: "audio/mp3",
+          upsert: true,
+        });
+      if (error) {
+        console.error(error);
+        return;
+      }
+      const { data } = supabase.storage
+        .from("fren_recordings")
+        .getPublicUrl(fileName);
+
+      const audioUrl = data.publicUrl;
+
+      await supabase.from("recordings").upsert(
+        {
+          vocab_id: vocab_id,
+          record_url: audioUrl,
+        },
+        {
+          onConflict: "vocab_id",
+        },
+      );
+    } else {
+      const fileName = `${title}.webm`;
+      const { error } = await supabase.storage
+        .from("fren_recordings")
+        .upload(fileName, audioBlob, {
+          contentType: "audio/webm",
+          upsert: true,
+        });
+      if (error) {
+        console.error(error);
+        return;
+      }
+      const { data } = supabase.storage
+        .from("fren_recordings")
+        .getPublicUrl(fileName);
+
+      const audioUrl = data.publicUrl;
+
+      await supabase.from("recordings").upsert(
+        {
+          vocab_id: vocab_id,
+          record_url: audioUrl,
+        },
+        { onConflict: "vocab_id" },
+      );
+    }
+  };
+
 
   // ---------------- fetching words ------------------ //
   useEffect(() => {
     const fetchPhrases = async () => {
       let query = supabase
-        .from("phrases")
+        .from("phrases_with_audio")
         .select("*")
         .order("created_at", { ascending: false });
 
@@ -68,7 +183,7 @@ function Vocab({
     };
 
     fetchPhrases();
-  }, [reloadKey, newsId, videoId]);
+  }, [reloadKey, newsId, videoId, recordingPhraseId]);
 
   // -------------------- Get Unit ---------------------------//
 
@@ -176,119 +291,7 @@ function Vocab({
     setVerifying(false);
   };
 
-  // ----------------------- For recording audio ------------------------- //
-//   const [recording, setRecording] = useState(false);
-  const [recordingPhraseId, setRecordingPhraseId] = useState<number | null>(
-    null,
-  );
-
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  // ----------------------- start recording ------------------------- //
-  const startRecording = async (vocab_id: number) => {
-    setRecordingPhraseId(vocab_id);
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
-
-    const recorder = new MediaRecorder(stream);
-
-    recorder.ondataavailable = (event) => {
-      chunksRef.current.push(event.data);
-    };
-
-    recorder.start();
-
-    mediaRecorderRef.current = recorder;
-    // setRecording(true);
-  };
-  // ----------stop recording and upload audio------------------ //
-  const stopRecording = async (title: string, vocab_id: number) => {
-    const recorder = mediaRecorderRef.current;
-
-    if (!recorder) return;
-
-    recorder.stop();
-
-    recorder.onstop = async () => {
-      const audioBlob = new Blob(chunksRef.current, {
-        type: "audio/webm",
-      });
-
-      chunksRef.current = [];
-
-      await uploadAudio(audioBlob, title, vocab_id);
-    };
-
-    // setRecording(false);
-    setRecordingPhraseId(null);
-  };
-  const ua = navigator.userAgent;
-  if (ua.includes("Safari") && !ua.includes("Chrome"))
-    console.log("Browser: Safari");
-  else console.log("Browser: Not Safari");
-  // ----------------------- For uploading audio ------------------------- //
-  const uploadAudio = async (
-    audioBlob: Blob,
-    title: string,
-    vocab_id: number,
-  ) => {
-    if (ua.includes("Safari") && !ua.includes("Chrome")) {
-      const fileName = `${title}.mp3`;
-      const { error } = await supabase.storage
-        .from("fren_recordings")
-        .upload(fileName, audioBlob, {
-          contentType: "audio/mp3",
-          upsert: true,
-        });
-      if (error) {
-        console.error(error);
-        return;
-      }
-      const { data } = supabase.storage
-        .from("fren_recordings")
-        .getPublicUrl(fileName);
-
-      const audioUrl = data.publicUrl;
-
-      await supabase.from("recordings").upsert(
-        {
-          vocab_id: vocab_id,
-          record_url: audioUrl,
-        },
-        {
-          onConflict: "vocab_id",
-        },
-      );
-    } else {
-      const fileName = `${title}.webm`;
-      const { error } = await supabase.storage
-        .from("fren_recordings")
-        .upload(fileName, audioBlob, {
-          contentType: "audio/webm",
-          upsert: true,
-        });
-      if (error) {
-        console.error(error);
-        return;
-      }
-      const { data } = supabase.storage
-        .from("fren_recordings")
-        .getPublicUrl(fileName);
-
-      const audioUrl = data.publicUrl;
-
-      await supabase.from("recordings").upsert(
-        {
-          vocab_id: vocab_id,
-          record_url: audioUrl,
-        },
-        { onConflict: "vocab_id" },
-      );
-    }
-  };
-
-  // ----------------------- For loading ------------------------- //
+    // ----------------------- For loading ------------------------- //
 
   if (!unit) return <p></p>;
 
@@ -296,6 +299,11 @@ function Vocab({
     <div>
       {user ? (
         <div className="add-phrase">
+          <button onClick={() => setIsEdit(prev => !prev)}>
+      {/* <h2>edit</h2> */}
+      {isEdit ? "Save" : "Edit"}
+    </button>
+          
           <input
             value={phrase}
             onChange={(e) => setPhrase(e.target.value)}
@@ -349,12 +357,6 @@ function Vocab({
         <></>
       )}
       <div className="phrases">
-        <audio
-          controls
-          src={
-            "https://akoedlhhcxktwwpyetrl.supabase.co/storage/v1/object/public/fren_recordings/1781085426378.mp3"
-          }
-        ></audio>
         {phraselist.map((p) => (
           <Link
             to={`phrase/${p.id}`}
@@ -365,11 +367,14 @@ function Vocab({
           >
             <div className="phrase">
               <div
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap:'20px'}}
               >
-                <h2 style={{ fontSize: "24px" }}>{p.phrase}</h2>
-                {recordingPhraseId === p.id ? (
+                <h2 style={{ fontSize: "24px"}}>{p.phrase}</h2>
+                
+{isEdit ? (
+                recordingPhraseId === p.id ? (
                   <button
+                  style={{background:'#f2e4ef'}}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -377,7 +382,6 @@ function Vocab({
                     }}
                   >
                     Stop
-                    <MdOutlineReply />
                   </button>
                 ) : (
                   <button
@@ -388,11 +392,29 @@ function Vocab({
                     }}
                   >
                     Record
-                    <MdOutlineReply />
                   </button>
-                )}
+                )
+
+) : (
+  <></>)}
+
+
+
+                    <button
+                    style={{display: p.record_url ? "block" : "none", border: "none", background: "none", cursor: "pointer", color: "#853275", fontSize: "20px", paddingLeft:'0px'}}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const audio = new Audio(p.record_url);
+        audio.play();
+      }}
+    >
+      <HiSpeakerWave />
+    </button>
               </div>
               <h3>{p.meaning}</h3>
+              {/* <h3>{p.record_url}</h3> */}
             </div>
           </Link>
         ))}
